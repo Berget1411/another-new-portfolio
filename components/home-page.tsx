@@ -1,9 +1,11 @@
 import { Hero } from "./hero";
+import { About } from "./about";
 
 export function HomePage() {
   return (
-    <div>
+    <main>
       <Hero />
-    </div>
+      <About />
+    </main>
   );
 }
