@@ -6,35 +6,52 @@
 }
 
 @theme inline {
-  --color-background: var(--color-background-primary);
-  --color-foreground: var(--color-text-primary);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background-primary: #0d1b2a;
-    --color-background-secondary: #1b263b;
-    --color-background-tertiary: #202d45;
-    --color-background-quaternary: #22304a;
-    --color-text-primary: #e0e1dd;
-    --color-text-secondary: #888888;
-    --color-success: #00ff00;
-    --color-error: #ff0000;
-    --background: #ffffff;
-    --foreground: #171717;
-  }
+  --color-background-primary: #0d0d2a;
+  --color-background-secondary: #151b3b;
+  --color-background-tertiary: #1a2045;
+  --color-background-quaternary: #1f254a;
+  --color-text-primary: #e0e1dd;
+  --color-text-secondary: #888888;
+  --color-success: #00ff00;
+  --color-error: #ff0000;
+  --background: #ffffff;
+  --foreground: #171717;
+  --color-primary: oklch(0.623 0.214 259.815);
 }
 
 body {
   background: var(--color-background-primary);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
+  color: var(--color-text-primary);
 }
 
-.main {
+.main-container {
   width: var(--width-main);
   max-width: var(--max-width-main);
   margin: 0 auto;
+}
+
+/* Typing cursor animation */
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background-color: currentColor;
+  margin-left: 2px;
+  vertical-align: middle;
+}
+
+.cursor-blink {
+  animation: blink 1s step-end infinite;
 }
