@@ -1,3 +1,9 @@
+import { Hero } from "./hero";
+
 export function HomePage() {
-  return <div>HomePage</div>;
+  return (
+    <div>
+      <Hero />
+    </div>
+  );
 }
