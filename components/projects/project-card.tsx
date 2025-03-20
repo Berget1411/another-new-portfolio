@@ -8,7 +8,7 @@ import { scrollToSection } from "@/utils/scroll-to-section";
 export function ProjectCard({ project }: { project: Project }) {
   return (
     <div
-      className='group rounded-lg p-6 transition-all duration-300 shadow-md border border-background-tertiary hover:border-background-tertiary/80 hover:shadow-lg cursor-pointer '
+      className='group rounded-lg p-6 transition-all duration-300 shadow-md border border-background-tertiary hover:border-background-tertiary/80 hover:shadow-lg cursor-pointer bg-background-secondary/5'
       onClick={() => scrollToSection(project.title)}
     >
       <div className='flex justify-between items-start mb-3'>
@@ -22,8 +22,13 @@ export function ProjectCard({ project }: { project: Project }) {
               target='_blank'
               rel='noopener noreferrer'
               className='text-text-secondary hover:text-primary transition-colors'
+              onClick={(e) => e.stopPropagation()}
             >
-              <Icon icon={<Github className='w-5 h-5' />} tooltip='GitHub' />
+              <Icon
+                icon={<Github strokeWidth={2} />}
+                tooltip='GitHub'
+                size='md'
+              />
             </a>
           )}
           {project.link && (
@@ -32,8 +37,13 @@ export function ProjectCard({ project }: { project: Project }) {
               target='_blank'
               rel='noopener noreferrer'
               className='text-text-secondary hover:text-primary transition-colors'
+              onClick={(e) => e.stopPropagation()}
             >
-              <Icon icon={<Link className='w-5 h-5' />} tooltip='Live Demo' />
+              <Icon
+                icon={<Link strokeWidth={2} />}
+                tooltip='Live Demo'
+                size='md'
+              />
             </a>
           )}
         </div>

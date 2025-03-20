@@ -1,39 +1,38 @@
 import { Github, Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
-import { IconBlob } from "../ui/icon-blob";
+import { Icon } from "../ui/icon";
 
+const media = [
+  {
+    icon: <Github />,
+    tooltip: "GitHub",
+    href: "https://github.com",
+  },
+  {
+    icon: <Linkedin />,
+    tooltip: "LinkedIn",
+    href: "https://linkedin.com",
+  },
+  {
+    icon: <Mail />,
+    tooltip: "Email",
+    href: "mailto:email@example.com",
+  },
+];
 export function HeroMedia() {
   return (
     <div className='flex gap-8 mt-6 max-md:justify-center'>
-      <IconBlob>
+      {media.map((item) => (
         <Link
-          href='https://github.com'
-          aria-label='GitHub'
-          className='text-text-primary hover:text-primary transition-colors p-3'
+          key={item.tooltip}
+          href={item.href}
+          target='_blank'
+          rel='noopener noreferrer'
+          className='text-text-secondary hover:text-primary transition-colors'
         >
-          <Github size={32} />
+          <Icon icon={item.icon} tooltip={item.tooltip} size='lg' />
         </Link>
-      </IconBlob>
-
-      <IconBlob>
-        <Link
-          href='https://linkedin.com'
-          aria-label='LinkedIn'
-          className='text-text-primary hover:text-primary transition-colors p-3'
-        >
-          <Linkedin size={32} />
-        </Link>
-      </IconBlob>
-
-      <IconBlob>
-        <Link
-          href='mailto:email@example.com'
-          aria-label='Email'
-          className='text-text-primary hover:text-primary transition-colors p-3'
-        >
-          <Mail size={32} />
-        </Link>
-      </IconBlob>
+      ))}
     </div>
   );
 }
