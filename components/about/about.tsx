@@ -98,7 +98,7 @@ export function About() {
   return (
     <section
       id='about'
-      className='relative w-full min-h-screen bg-background py-12 md:py-20'
+      className='relative w-full  bg-background py-12 md:py-20'
     >
       <div className='container mx-auto px-4 md:px-8'>
         <motion.div

@@ -19,6 +19,22 @@
   --color-primary: oklch(0.623 0.214 259.815);
 }
 
+/* Add Tailwind theme configuration */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background-primary: 240 77% 11%;
+    --background-secondary: 231 48% 16%;
+    --background-tertiary: 232 43% 19%;
+    --background-quaternary: 232 40% 21%;
+    --text-primary: 54 7% 84%;
+    --text-secondary: 0 0% 53%;
+  }
+}
+
 body {
   background: var(--color-background-primary);
   color: var(--color-text-primary);
