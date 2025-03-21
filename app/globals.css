@@ -71,3 +71,44 @@ body {
 .cursor-blink {
   animation: blink 1s step-end infinite;
 }
+
+/* Add this to your globals.css file for the outlined number style */
+.number-outline {
+  -webkit-text-stroke: 1px hsl(var(--background-tertiary));
+  text-stroke: 1px hsl(var(--background-tertiary));
+}
+
+/* Add after the number-outline class */
+.clip-corners {
+  clip-path: polygon(
+    0% 15px,
+    15px 0%,
+    100% 0%,
+    100% calc(100% - 15px),
+    calc(100% - 15px) 100%,
+    0% 100%
+  );
+}
+
+/* Special clip corners classes */
+.clip-corners-bl-large {
+  clip-path: polygon(
+    0% 15px,
+    15px 0%,
+    100% 0%,
+    100% 100%,
+    60px 100%,
+    0% calc(100% - 60px)
+  );
+}
+
+.clip-corners-br-large {
+  clip-path: polygon(
+    0% 15px,
+    15px 0%,
+    100% 0%,
+    100% calc(100% - 60px),
+    calc(100% - 60px) 100%,
+    0% 100%
+  );
+}
