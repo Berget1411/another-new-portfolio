@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { experience, education } from "@/assets";
+import { GlowingEffect } from "../ui/glowing-effect";
+import Image from "next/image";
 
 export function About() {
   const [tab, setTab] = useState("about");
@@ -72,37 +75,27 @@ export function About() {
       ],
     },
     {
-      id: "started",
-      label: "How it started",
+      id: "experience",
+      label: "Experience",
       main: "My journey in programming began when I was 12 years old. What started as simple curiosity quickly evolved into a passion for building websites and applications. During high school, I deepened my knowledge by taking on more complex projects and exploring frameworks like React and Next.js.",
-      cards: [
-        "Full stack developer",
-        "Specializing in frontend",
-        "Started when I was 12",
-        "20 years old",
-      ],
+      items: experience,
     },
     {
-      id: "mindset",
-      label: "My mindset",
+      id: "education",
+      label: "Education",
       main: "I approach problems with a blend of analytical thinking and creative problem-solving. My philosophy is that good code should be both efficient and readable. I believe in continuous learning and staying adaptable in the ever-evolving tech landscape.",
-      values: [
-        "Clean, maintainable code",
-        "User-centered design",
-        "Continuous improvement",
-        "Pragmatic problem solving",
-      ],
+      items: education,
     },
   ];
 
   return (
     <section
       id='about'
-      className='relative w-full  bg-background py-12 md:py-20'
+      className='relative w-full bg-background py-12 md:py-20 '
     >
-      <div className='container mx-auto px-4 md:px-8'>
+      <div className='main-container '>
         <motion.div
-          className='max-w-4xl mx-auto'
+          className=''
           initial='hidden'
           whileInView='visible'
           viewport={{ once: true, margin: "-100px" }}
@@ -137,7 +130,7 @@ export function About() {
 
           {/* Tab Content */}
           <motion.div className='space-y-6' variants={itemVariants}>
-            {/* About tab content */}
+            {/* Content for selected tab */}
             {contentData
               .filter((item) => item.id === tab)
               .map((item) => (
@@ -149,48 +142,143 @@ export function About() {
                   exit='exit'
                   transition={{ duration: 0.4 }}
                 >
-                  <motion.p className='text-base md:text-lg leading-relaxed text-center md:text-left'>
+                  <motion.p className='text-base md:text-lg leading-relaxed text-center md:text-left mb-6'>
                     {item.main}
                   </motion.p>
 
-                  <motion.div className='grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mt-6 md:mt-8'>
-                    {item.cards &&
-                      item.cards.map((card, index) => (
-                        <motion.div
+                  {/* Render different content based on tab type */}
+                  {item.id === "about" && item.cards && (
+                    <motion.ul className='grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mt-6 md:mt-8'>
+                      {item.cards.map((card, index) => (
+                        <motion.li
                           key={`about-card-${index}`}
-                          className='bg-gray-800/30 backdrop-blur-sm border border-gray-700/50 rounded-lg p-4 text-center md:text-left text-sm md:text-base shadow-lg hover:border-primary/40 transition-colors group relative overflow-hidden'
-                          variants={cardVariants}
                           custom={index}
+                          variants={cardVariants}
                           initial='hidden'
                           animate='visible'
-                          whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                          className='list-none'
                         >
-                          <div className='absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
-                          <div className='relative z-10'>{card}</div>
-                        </motion.div>
+                          <div className='relative rounded-xl border border-background-tertiary p-1.5 md:rounded-2xl md:p-2'>
+                            <GlowingEffect
+                              spread={40}
+                              glow={true}
+                              disabled={false}
+                              proximity={64}
+                              inactiveZone={0.01}
+                            />
+                            <div className='relative flex flex-col justify-center items-center overflow-hidden rounded-lg p-3 md:p-4 bg-background-secondary/30 backdrop-blur-sm'>
+                              <div className='relative z-10 text-center'>
+                                <span className='text-base  text-text-primary font-medium'>
+                                  {card}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.li>
                       ))}
+                    </motion.ul>
+                  )}
 
-                    {item.values &&
-                      item.values.map((value, index) => (
-                        <motion.div
-                          key={`about-value-${index}`}
-                          className='bg-gray-800/30 backdrop-blur-sm border border-gray-700/50 rounded-lg p-4 text-center md:text-left text-sm md:text-base shadow-lg hover:border-primary/40 transition-colors group relative overflow-hidden'
-                          variants={cardVariants}
-                          custom={index}
-                          initial='hidden'
-                          animate='visible'
-                          whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                        >
-                          <div className='absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
-                          <div className='relative z-10'>{value}</div>
-                        </motion.div>
-                      ))}
-                  </motion.div>
+                  {/* Grid for experience and education */}
+                  {(item.id === "experience" || item.id === "education") &&
+                    item.items && (
+                      <motion.ul className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
+                        {item.items.map((entry, index) => (
+                          <ExperienceCard
+                            key={entry.id}
+                            entry={entry}
+                            index={index}
+                            variants={cardVariants}
+                          />
+                        ))}
+                      </motion.ul>
+                    )}
                 </motion.div>
               ))}
           </motion.div>
         </motion.div>
       </div>
     </section>
+  );
+}
+
+// Experience/Education Card Component
+interface EntryItem {
+  id: string;
+  title: string;
+  undertitle: string;
+  date: string;
+  desc1: string;
+  desc2: string;
+  image: string;
+}
+
+interface ExperienceCardProps {
+  entry: EntryItem;
+  index: number;
+  variants: {
+    hidden: { opacity: number; scale: number };
+    visible: (i: number) => {
+      opacity: number;
+      scale: number;
+      transition: {
+        delay: number;
+        duration: number;
+        ease: number[];
+      };
+    };
+  };
+}
+
+function ExperienceCard({ entry, index, variants }: ExperienceCardProps) {
+  return (
+    <motion.li
+      custom={index}
+      variants={variants}
+      initial='hidden'
+      animate='visible'
+      className='min-h-[12rem] md:min-h-[16rem] list-none'
+    >
+      <div className='relative h-full rounded-xl border border-background-tertiary p-1.5 md:rounded-2xl md:p-2'>
+        <GlowingEffect
+          spread={40}
+          glow={true}
+          disabled={false}
+          proximity={64}
+          inactiveZone={0.01}
+        />
+        <div className='relative flex h-full flex-col justify-between overflow-hidden rounded-lg p-3 md:p-4 bg-background-secondary/30 backdrop-blur-sm'>
+          {/* Header with icon/image and title */}
+          <div className='flex items-center gap-2 md:gap-3 mb-2 md:mb-3'>
+            <div className='flex-shrink-0 w-10 h-10 md:w-12 md:h-12 rounded-md border border-background-tertiary bg-background-secondary/50 overflow-hidden'>
+              <Image
+                src={entry.image}
+                alt={entry.title}
+                width={48}
+                height={48}
+                className='w-full h-full object-cover rounded-md'
+              />
+            </div>
+            <div className='flex-1 min-w-0'>
+              <h3 className='text-base md:text-lg font-semibold text-text-primary truncate'>
+                {entry.title}
+              </h3>
+              <p className='text-xs md:text-sm text-text-secondary truncate'>
+                {entry.undertitle}
+              </p>
+            </div>
+            <div className='ml-auto px-2 py-1 text-xs font-medium rounded-full bg-background-tertiary/50 text-text-secondary whitespace-nowrap'>
+              {entry.date}
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className='flex-1 mt-2 space-y-2 text-sm'>
+            <p className='text-text-primary'>{entry.desc1}</p>
+            <p className='text-text-secondary'>{entry.desc2}</p>
+          </div>
+        </div>
+      </div>
+    </motion.li>
   );
 }
