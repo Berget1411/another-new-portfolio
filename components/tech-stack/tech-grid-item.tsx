@@ -19,7 +19,7 @@ export function TechGridItem({
   leftAligned = false,
 }: TechGridItemProps) {
   return (
-    <li className={`min-h-[12rem] md:min-h-[14rem] list-none ${area}`}>
+    <div className={`h-full min-h-[12rem] md:min-h-[14rem] ${area}`}>
       <div className='relative h-full rounded-xl border border-background-tertiary p-1.5 md:rounded-2xl md:p-2'>
         <GlowingEffect
           spread={40}
@@ -51,7 +51,7 @@ export function TechGridItem({
           </div>
         </div>
       </div>
-    </li>
+    </div>
   );
 }
 
