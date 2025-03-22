@@ -6,6 +6,8 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Send } from "lucide-react";
 import { TextArea } from "../ui/text-area";
+import { sendEmail } from "@/lib/api";
+
 export function ContactForm() {
   const {
     register,
@@ -14,8 +16,8 @@ export function ContactForm() {
   } = useForm<ContactFormSchema>({
     resolver: zodResolver(contactFormSchema),
   });
-  const onSubmit = (data: ContactFormSchema) => {
-    console.log(data);
+  const onSubmit = async (data: ContactFormSchema) => {
+    await sendEmail(data);
   };
   return (
     <form
