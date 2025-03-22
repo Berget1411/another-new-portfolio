@@ -4,6 +4,7 @@ import { Projects } from "./projects";
 import { ProjectsFull } from "./projects-full";
 import { Separator } from "./ui/separator";
 import { TechStack } from "./tech-stack";
+import { Contact } from "./contact";
 export function HomePage() {
   return (
     <main>
@@ -14,6 +15,8 @@ export function HomePage() {
       <ProjectsFull />
       <Separator />
       <TechStack />
+      <Separator />
+      <Contact />
     </main>
   );
 }

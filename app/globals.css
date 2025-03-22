@@ -32,6 +32,11 @@
     --background-quaternary: 232 40% 21%;
     --text-primary: 54 7% 84%;
     --text-secondary: 0 0% 53%;
+    --color-success: #00ff00;
+    --color-error: #ff0000;
+    --background: #ffffff;
+    --foreground: #171717;
+    --color-primary: oklch(0.623 0.214 259.815);
   }
 }
 
@@ -111,4 +116,13 @@ body {
     calc(100% - 60px) 100%,
     0% 100%
   );
+}
+
+/* Add these custom utility classes */
+.text-color-error {
+  color: var(--color-error);
+}
+
+.text-color-secondary {
+  color: var(--color-text-secondary);
 }
