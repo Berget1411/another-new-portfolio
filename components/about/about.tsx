@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { experience, education } from "@/assets";
 import { GlowingEffect } from "../ui/glowing-effect";
 import Image from "next/image";
+import { awards } from "@/assets/awards";
 
 export function About() {
   const [tab, setTab] = useState("about");
@@ -85,6 +86,12 @@ export function About() {
       label: "Education",
       main: "I approach problems with a blend of analytical thinking and creative problem-solving. My philosophy is that good code should be both efficient and readable. I believe in continuous learning and staying adaptable in the ever-evolving tech landscape.",
       items: education,
+    },
+    {
+      id: "awards",
+      label: "Awards",
+      main: "I approach problems with a blend of analytical thinking and creative problem-solving. My philosophy is that good code should be both efficient and readable. I believe in continuous learning and staying adaptable in the ever-evolving tech landscape.",
+      items: awards,
     },
   ];
 
@@ -180,7 +187,9 @@ export function About() {
                   )}
 
                   {/* Grid for experience and education */}
-                  {(item.id === "experience" || item.id === "education") &&
+                  {(item.id === "experience" ||
+                    item.id === "education" ||
+                    item.id === "awards") &&
                     item.items && (
                       <motion.ul className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
                         {item.items.map((entry, index) => (
@@ -275,7 +284,7 @@ function ExperienceCard({ entry, index, variants }: ExperienceCardProps) {
           {/* Content */}
           <div className='flex-1 mt-2 space-y-2 text-sm'>
             <p className='text-text-primary'>{entry.desc1}</p>
-            <p className='text-text-secondary'>{entry.desc2}</p>
+            <p className='text-text-primary'>{entry.desc2}</p>
           </div>
         </div>
       </div>
