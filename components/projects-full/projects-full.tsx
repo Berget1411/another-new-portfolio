@@ -74,7 +74,7 @@ export function ProjectsFull() {
     <section className='main-container py-20'>
       <div className='flex flex-col  relative'>
         {projects.map((project, index) => (
-          <>
+          <div key={project.title}>
             <ProjectFullCard
               key={project.title}
               project={project}
@@ -88,7 +88,7 @@ export function ProjectsFull() {
                 </h2>
               </Separator>
             )}
-          </>
+          </div>
         ))}
       </div>
     </section>
