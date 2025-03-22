@@ -3,33 +3,27 @@ export const education = [
     id: "kth",
     title: "KTH Royal Institute of Technology",
     undertitle: "M.Sc. Industrial Engineering and Management",
-    date: "2024 - 2029",
-    desc1:
-      "One of Europe's leading technical universities, ranked 95th in the world.",
-    desc2:
-      "300 ECTS of courses in Mathematics, Computer Science and Industrial Economics and Management.",
+    date: "Aug 2024 - Jun 2029",
+    desc1: "One of Europe's leading technical universities.",
+    desc2: "Current Grade: 5.00 / 5.00",
     image: "/images/education/kth.jpeg",
   },
   {
     id: "odin",
     title: "The Odin Project",
-    undertitle: "Full Stack Course",
+    undertitle: "Full-Stack Development Course",
     date: "Jul 2023 - Jun 2024",
-    desc1:
-      "One of Europe's leading technical universities, ranked 95th in the world.",
-    desc2:
-      "300 ECTS of courses in Mathematics, Computer Science and Industrial Economics and Management.",
-    image: "/images/education/kth.jpeg",
+    desc1: "Comprehensive curriculum for modern web development.",
+    desc2: "Technologies: Next.js, Typescript, Express.js & much more!",
+    image: "/images/education/odin.png",
   },
   {
     id: "ng",
     title: "Nacka Gymnasium",
-    undertitle: "High School Diploma, Natural Science Programme",
-    date: "2020 - 2023",
-    desc1:
-      "During my gap year I took an open source curriculum for learning modern web development.",
-    desc2:
-      "I learned fullstack web development with technologies like JavaScript, TypeScript, Tailwind CSS, React, Next.js, Node.js, Express, MongoDB etc...",
-    image: "/images/education/odin.png",
+    undertitle: "Gymnasieexamen, Natural Sciences",
+    date: "Aug 2020 - Jun 2023",
+    desc1: "Focused on natural sciences with advanced math and physics.",
+    desc2: "Grade: 22.29 / 22.5 points",
+    image: "/images/education/ng.png",
   },
 ];

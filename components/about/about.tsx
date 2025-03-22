@@ -67,30 +67,25 @@ export function About() {
     {
       id: "about",
       label: "About me",
-      main: "Hi, I'm Ludvig—a self-taught programmer and first-year M.Sc. student in Industrial Engineering and Management at KTH. Alongside my studies, I'm a software developer at THS Business, helping KTH students connect with future employers. I'm currently expanding my skills in full-stack development and leveraging AI tools like Cursor and ChatGPT to code more efficiently.",
-      cards: [
-        "Full stack developer",
-        "Specializing in frontend",
-        "Started when I was 12",
-        "20 years old",
-      ],
+      main: "Full-Stack IT Consultant and Industrial Engineering and Management student with hands-on experience in software development, hackathons, and consulting. Passionate about computer science, artificial intelligence, finance, and management. Driven by curiosity, I enjoy tackling complex problems, delivering innovative solutions, and collaborating closely with others in dynamic, fast-paced environments.",
+      cards: ["Full stack developer", "AI", "Finance", "Management"],
     },
     {
       id: "experience",
       label: "Experience",
-      main: "My journey in programming began when I was 12 years old. What started as simple curiosity quickly evolved into a passion for building websites and applications. During high school, I deepened my knowledge by taking on more complex projects and exploring frameworks like React and Next.js.",
+
       items: experience,
     },
     {
       id: "education",
       label: "Education",
-      main: "I approach problems with a blend of analytical thinking and creative problem-solving. My philosophy is that good code should be both efficient and readable. I believe in continuous learning and staying adaptable in the ever-evolving tech landscape.",
+
       items: education,
     },
     {
       id: "awards",
       label: "Awards",
-      main: "I approach problems with a blend of analytical thinking and creative problem-solving. My philosophy is that good code should be both efficient and readable. I believe in continuous learning and staying adaptable in the ever-evolving tech landscape.",
+
       items: awards,
     },
   ];
@@ -149,7 +144,7 @@ export function About() {
                   exit='exit'
                   transition={{ duration: 0.4 }}
                 >
-                  <motion.p className='text-base md:text-lg leading-relaxed text-center md:text-left mb-6'>
+                  <motion.p className='text-base md:text-lg leading-relaxed text-center md:text-left mb-6 text-white'>
                     {item.main}
                   </motion.p>
 
@@ -324,22 +319,22 @@ function ExperienceCard({ entry, index, variants }: ExperienceCardProps) {
               />
             </div>
             <div className='flex-1 min-w-0'>
-              <h3 className='text-base md:text-lg font-semibold text-text-primary truncate'>
+              <h3 className='text-base md:text-lg font-semibold text-white truncate'>
                 {entry.title}
               </h3>
-              <p className='text-xs md:text-sm text-text-secondary truncate'>
+              <p className='text-xs md:text-sm text-white/80 truncate'>
                 {entry.undertitle}
               </p>
             </div>
-            <div className='ml-auto px-2 py-1 text-xs font-medium rounded-full bg-background-tertiary/50 text-text-secondary whitespace-nowrap'>
+            <div className='ml-auto px-2 py-1 text-xs font-medium rounded-full bg-background-tertiary/50 text-white whitespace-nowrap'>
               {entry.date}
             </div>
           </div>
 
           {/* Content */}
           <div className='flex-1 mt-2 space-y-2 text-sm'>
-            <p className='text-text-primary'>{entry.desc1}</p>
-            <p className='text-text-secondary'>{entry.desc2}</p>
+            <p className='text-white'>{entry.desc1}</p>
+            <p className='text-white'>{entry.desc2}</p>
           </div>
         </div>
       </div>

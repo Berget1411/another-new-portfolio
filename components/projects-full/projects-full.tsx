@@ -1,79 +1,38 @@
 import { ProjectFullCard } from "./project-full-card";
 import { Separator } from "../ui/separator";
-const projects = [
-  {
-    title: "Project 1",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    date: "Sep, 2024",
-    github: "https://github.com/project1",
-    link: "https://ludvigbergstrom.com",
-    image: null,
-    dev: false,
-  },
-  {
-    title: "Project 2",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    date: "Sep, 2024",
+import { projects } from "@/assets/projects";
 
-    github: "https://github.com/project2",
-    link: "https://project2.com",
-    image: null,
-    dev: false,
-  },
-  {
-    title: "Project 3",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    date: "Sep, 2024",
+// Create a type based on the imported projects
+export type Project = {
+  title: string;
+  description: string;
+  date: string;
+  github?: string;
+  link?: string;
+  image: string | null;
+  dev: boolean;
+};
 
-    github: "https://github.com/project3",
-    link: "https://project3.com",
-    image: null,
-    dev: false,
-  },
-  {
-    title: "Project 4",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    date: "Sep, 2024",
+// Map imported projects to the format expected by ProjectFullCard
+const formattedProjects = projects.map((project) => ({
+  title: project.title,
+  description: project.longDescription,
+  date: project.date,
+  github: project.github || "", // Default to empty string if undefined
+  link: project.demo || "", // Default to empty string if undefined
+  image: project.image || null,
+  dev: project.devMode,
+}));
 
-    github: "https://github.com/project4",
-    link: "https://project4.com",
-    image: null,
-    dev: false,
-  },
-  {
-    title: "Project 5",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    date: "Sep, 2024",
+const firstDevProjectIndex = formattedProjects.findIndex(
+  (project) => project.dev
+);
 
-    github: "https://github.com/project5",
-    link: "https://project5.com",
-    image: null,
-    dev: true,
-  },
-  {
-    title: "Project 6",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    date: "Sep, 2024",
-    github: "https://github.com/project6",
-    link: "https://project6.com",
-    image: null,
-    dev: true,
-  },
-];
-
-export type Project = (typeof projects)[number];
-const firstDevProjectIndex = projects.findIndex((project) => project.dev);
 export function ProjectsFull() {
   return (
     <section className='main-container py-20'>
-      <div className='flex flex-col  relative'>
-        {projects.map((project, index) => (
+      <div className='flex flex-col relative'>
+        {formattedProjects.map((project, index) => (
           <div key={project.title}>
             <ProjectFullCard
               key={project.title}
@@ -81,7 +40,7 @@ export function ProjectsFull() {
               reverse={index % 2 !== 0}
               index={index}
             />
-            {index === firstDevProjectIndex && (
+            {index === firstDevProjectIndex && firstDevProjectIndex !== -1 && (
               <Separator position='left'>
                 <h2 className='text-2xl md:text-4xl font-bold mb-0 text-center'>
                   Projects in development

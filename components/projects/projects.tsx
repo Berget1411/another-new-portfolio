@@ -2,65 +2,17 @@
 import { Separator } from "../ui/separator";
 import { ProjectCard } from "./project-card";
 import { motion } from "framer-motion";
+import { projects } from "@/assets/projects";
 
-const projects = [
-  {
-    title: "Project 1",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    date: "Sep, 2024",
-    techStack: ["React", "Next.js", "Tailwind CSS"],
-    github: "https://github.com/project1",
-    link: "https://project1.com",
-  },
-  {
-    title: "Project 2",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    date: "Sep, 2024",
-    techStack: ["React", "Next.js", "Tailwind CSS"],
-    github: "https://github.com/project2",
-    link: "https://project2.com",
-  },
-  {
-    title: "Project 3",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    date: "Sep, 2024",
-    techStack: ["React", "Next.js", "Tailwind CSS"],
-    github: "https://github.com/project3",
-    link: "https://project3.com",
-  },
-  {
-    title: "Project 4",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    date: "Sep, 2024",
-    techStack: ["React", "Next.js", "Tailwind CSS"],
-    github: "https://github.com/project4",
-    link: "https://project4.com",
-  },
-  {
-    title: "Project 5",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    date: "Sep, 2024",
-    techStack: ["React", "Next.js", "Tailwind CSS"],
-    github: "https://github.com/project5",
-    link: "https://project5.com",
-  },
-  {
-    title: "Project 6",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    date: "Sep, 2024",
-    techStack: ["React", "Next.js", "Tailwind CSS"],
-    github: "https://github.com/project6",
-    link: "https://project6.com",
-  },
-];
-
-export type Project = (typeof projects)[number];
+// Create a type based on the imported projects
+export type Project = {
+  title: string;
+  description: string;
+  date: string;
+  techStack: string[];
+  github?: string;
+  link?: string;
+};
 
 export function Projects() {
   // Animation variants
@@ -87,13 +39,40 @@ export function Projects() {
     },
   };
 
+  // Map imported projects to the format expected by ProjectCard
+  const formattedProjects = projects.map((project) => ({
+    title: project.title,
+    description: project.shortDescription,
+    date: project.date,
+    techStack: project.tech,
+    github: project.github || "",
+    link: project.demo || "",
+  }));
+
   return (
     <div className='py-12 md:py-20' id='projects'>
       <Separator>
-        <h2 className='text-2xl md:text-5xl font-bold mb-0 text-center'>
+        <motion.h2
+          className='text-2xl md:text-5xl font-bold mb-0 text-center'
+          initial='hidden'
+          whileInView='visible'
+          viewport={{ once: true, margin: "-100px" }}
+          variants={itemVariants}
+        >
           Projects
-        </h2>
+        </motion.h2>
       </Separator>
+
+      <motion.p
+        className='text-center text-lg font-medium text-text-secondary'
+        initial='hidden'
+        whileInView='visible'
+        viewport={{ once: true, margin: "-100px" }}
+        variants={itemVariants}
+      >
+        Here are some of my previous projects and ones I&apos;m working on right
+        now
+      </motion.p>
       <motion.div
         className='main-container pt-8 md:pt-12'
         initial='hidden'
@@ -102,11 +81,12 @@ export function Projects() {
         variants={containerVariants}
       >
         <motion.div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6'>
-          {projects.map((project, index) => (
+          {formattedProjects.map((project, index) => (
             <motion.div
               key={project.title}
               variants={itemVariants}
               custom={index}
+              className='h-full'
             >
               <ProjectCard project={project} />
             </motion.div>
