@@ -29,17 +29,20 @@ export function ContactForm() {
           label='Name'
           {...register("name")}
           error={errors.name?.message}
+          placeholder='John Doe'
         />
         <Input
           label='Email'
           {...register("email")}
           error={errors.email?.message}
+          placeholder='john.doe@example.com'
         />
       </div>
       <TextArea
         label='Message'
         {...register("message")}
         error={errors.message?.message}
+        placeholder='Write your message here...'
       />
 
       <Button type='submit' className='mt-4 w-full group'>
