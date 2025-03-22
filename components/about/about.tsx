@@ -155,35 +155,90 @@ export function About() {
 
                   {/* Render different content based on tab type */}
                   {item.id === "about" && item.cards && (
-                    <motion.ul className='grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mt-6 md:mt-8'>
-                      {item.cards.map((card, index) => (
-                        <motion.li
-                          key={`about-card-${index}`}
-                          custom={index}
-                          variants={cardVariants}
-                          initial='hidden'
-                          animate='visible'
-                          className='list-none'
-                        >
-                          <div className='relative rounded-xl border border-background-tertiary p-1.5 md:rounded-2xl md:p-2'>
-                            <GlowingEffect
-                              spread={40}
-                              glow={true}
-                              disabled={false}
-                              proximity={64}
-                              inactiveZone={0.01}
+                    <div className='flex flex-col md:flex-row md:items-start gap-6 md:gap-10'>
+                      {/* Profile image section on mobile (top position) */}
+                      <motion.div
+                        className='md:hidden w-full flex justify-center mb-4'
+                        variants={itemVariants}
+                      >
+                        <div className='relative rounded-xl border border-background-tertiary p-1.5 w-36 h-36'>
+                          <GlowingEffect
+                            spread={40}
+                            glow={true}
+                            disabled={false}
+                            proximity={64}
+                            inactiveZone={0.01}
+                          />
+                          <div className='relative flex h-full w-full overflow-hidden rounded-lg bg-background-secondary/30 backdrop-blur-sm'>
+                            <Image
+                              src='/images/profile.png'
+                              alt='Profile'
+                              fill
+                              className='object-cover'
+                              sizes='9rem'
                             />
-                            <div className='relative flex flex-col justify-center items-center overflow-hidden rounded-lg p-3 md:p-4 bg-background-secondary/30 backdrop-blur-sm'>
-                              <div className='relative z-10 text-center'>
-                                <span className='text-base  text-text-primary font-medium'>
-                                  {card}
-                                </span>
-                              </div>
-                            </div>
                           </div>
-                        </motion.li>
-                      ))}
-                    </motion.ul>
+                        </div>
+                      </motion.div>
+
+                      {/* Cards section */}
+                      <div className='w-full md:w-2/3'>
+                        <motion.ul className='grid grid-cols-2 gap-2 md:gap-4'>
+                          {item.cards.map((card, index) => (
+                            <motion.li
+                              key={`about-card-${index}`}
+                              custom={index}
+                              variants={cardVariants}
+                              initial='hidden'
+                              animate='visible'
+                              className='list-none'
+                            >
+                              <div className='relative rounded-xl border border-background-tertiary p-1 md:p-1.5 md:rounded-2xl md:p-2'>
+                                <GlowingEffect
+                                  spread={40}
+                                  glow={true}
+                                  disabled={false}
+                                  proximity={64}
+                                  inactiveZone={0.01}
+                                />
+                                <div className='relative flex flex-col justify-center items-center overflow-hidden rounded-lg p-2 md:p-4 bg-background-secondary/30 backdrop-blur-sm h-16 md:h-20'>
+                                  <div className='relative z-10 text-center w-full'>
+                                    <span className='text-sm md:text-base text-text-primary font-medium line-clamp-2'>
+                                      {card}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </motion.li>
+                          ))}
+                        </motion.ul>
+                      </div>
+
+                      {/* Profile image section on desktop (right position) */}
+                      <motion.div
+                        className='hidden md:flex w-1/3 justify-end'
+                        variants={itemVariants}
+                      >
+                        <div className='relative rounded-xl border border-background-tertiary p-1.5 md:rounded-2xl md:p-2 w-56 h-56 lg:w-64 lg:h-64'>
+                          <GlowingEffect
+                            spread={40}
+                            glow={true}
+                            disabled={false}
+                            proximity={64}
+                            inactiveZone={0.01}
+                          />
+                          <div className='relative flex h-full w-full overflow-hidden rounded-lg bg-background-secondary/30 backdrop-blur-sm'>
+                            <Image
+                              src='/images/profile.png'
+                              alt='Profile'
+                              fill
+                              className='object-cover'
+                              sizes='(max-width: 1024px) 14rem, 16rem'
+                            />
+                          </div>
+                        </div>
+                      </motion.div>
+                    </div>
                   )}
 
                   {/* Grid for experience and education */}
@@ -284,7 +339,7 @@ function ExperienceCard({ entry, index, variants }: ExperienceCardProps) {
           {/* Content */}
           <div className='flex-1 mt-2 space-y-2 text-sm'>
             <p className='text-text-primary'>{entry.desc1}</p>
-            <p className='text-text-primary'>{entry.desc2}</p>
+            <p className='text-text-secondary'>{entry.desc2}</p>
           </div>
         </div>
       </div>
