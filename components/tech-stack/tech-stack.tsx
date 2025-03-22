@@ -6,7 +6,7 @@ import { IoCodeSlash } from "react-icons/io5";
 
 export function TechStack() {
   return (
-    <section className='py-6 px-3 md:py-10 md:px-6'>
+    <section className='py-6 px-3 md:py-10 md:px-6' id='tech-stack'>
       <div className='max-w-6xl mx-auto'>
         <h2 className='text-2xl md:text-3xl font-bold mb-3 md:mb-4 text-center'>
           My Tech Stack

@@ -88,7 +88,7 @@ export function Projects() {
   };
 
   return (
-    <div className='py-12 md:py-20'>
+    <div className='py-12 md:py-20' id='projects'>
       <Separator>
         <h2 className='text-2xl md:text-5xl font-bold mb-0 text-center'>
           Projects
