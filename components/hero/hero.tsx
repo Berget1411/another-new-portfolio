@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 export function Hero() {
-  const [alignment, setAlignment] = useState("left");
+  const [alignment, setAlignment] = useState<"left" | "center">("left");
 
   // Use useEffect for client-side window access
   useEffect(() => {

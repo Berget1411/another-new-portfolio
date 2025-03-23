@@ -3,7 +3,7 @@ import { Project } from "./projects-full";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { Icon } from "../ui/icon";
-import { Github, ArrowRight } from "lucide-react";
+import { Github, ArrowRight, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -22,6 +22,13 @@ export function ProjectFullCard({
   // Format the index to have leading zero for single digits
   const formattedIndex = String(index + 1).padStart(2, "0");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Function to conditionally open the dialog only if URL exists
+  const handlePreviewClick = () => {
+    if (project.link) {
+      setIsDialogOpen(true);
+    }
+  };
 
   return (
     <motion.div
@@ -55,34 +62,49 @@ export function ProjectFullCard({
           {project.description}
         </p>
         <div className='flex gap-4 items-center mt-3'>
-          <Button className='group'>
-            <Link href={project.link}>View Project</Link>
-            <ArrowRight className='w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform' />
-          </Button>
-          <Link
-            href={project.github}
-            className='text-text-secondary hover:text-primary transition-colors'
-          >
-            <Icon
-              icon={<Github strokeWidth={2} />}
-              size='md'
-              tooltip='View on Github'
-            />
-          </Link>
+          {project.link ? (
+            <Button className='group'>
+              <Link href={project.link}>View Project</Link>
+              <ArrowRight className='w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform' />
+            </Button>
+          ) : (
+            <Button className='group' disabled>
+              <span>Not Available</span>
+              <ExternalLink className='w-4 h-4 ml-2 opacity-50' />
+            </Button>
+          )}
+
+          {project.github && (
+            <Link
+              href={project.github}
+              className='text-text-secondary hover:text-primary transition-colors'
+            >
+              <Icon
+                icon={<Github strokeWidth={2} />}
+                size='md'
+                tooltip='View on Github'
+              />
+            </Link>
+          )}
         </div>
       </div>
 
       <motion.div
-        className='w-full max-w-lg overflow-hidden shadow-md cursor-pointer relative group'
-        whileHover={{ scale: 1.02 }}
+        className={cn(
+          "w-full max-w-lg overflow-hidden shadow-md relative group",
+          project.link ? "cursor-pointer" : "cursor-default"
+        )}
+        whileHover={project.link ? { scale: 1.02 } : {}}
         transition={{ duration: 0.3 }}
-        onClick={() => setIsDialogOpen(true)}
+        onClick={handlePreviewClick}
       >
-        <div className='absolute inset-0  opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10'>
-          <Button variant='outline' className='bg-background-primary/80 '>
-            Preview Website
-          </Button>
-        </div>
+        {project.link && (
+          <div className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10'>
+            <Button variant='outline' className='bg-background-primary/80'>
+              Preview Website
+            </Button>
+          </div>
+        )}
         <Image
           src={project.image || "/images/placeholder_image.png"}
           alt={project.title}
@@ -97,13 +119,15 @@ export function ProjectFullCard({
         />
       </motion.div>
 
-      {/* IFrame Dialog */}
-      <IFrameDialog
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        title={project.title}
-        url={project.link}
-      />
+      {/* IFrame Dialog - only render if project.link exists */}
+      {project.link && (
+        <IFrameDialog
+          isOpen={isDialogOpen}
+          onClose={() => setIsDialogOpen(false)}
+          title={project.title}
+          url={project.link}
+        />
+      )}
     </motion.div>
   );
 }

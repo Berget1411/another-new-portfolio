@@ -22,13 +22,6 @@ export function HeroBackground() {
   const [isMobile, setIsMobile] = useState(false);
   const mobileIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Store event handlers in refs to avoid cleanup scope issues
-  const handlersRef = useRef({
-    handleMouseMove: (e: MouseEvent) => {},
-    handleMouseEnter: () => {},
-    handleMouseLeave: () => {},
-  });
-
   // Function to update the spotlight mask
   const updateMask = (radius: number, x: number, y: number) => {
     if (spotlightRef.current) {
@@ -120,6 +113,32 @@ export function HeroBackground() {
     updateMask(BASE_RADIUS, width / 2, height / 2);
     currentMouseRef.current = { x: width / 2, y: height / 2 };
 
+    // Define event handlers at this scope level so they're available for cleanup
+    const mouseMoveHandler = (e: MouseEvent) => {
+      if (!isMobile) {
+        const rect = container.getBoundingClientRect();
+        // Calculate position relative to the container
+        mousePositionRef.current = {
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top + window.scrollY,
+        };
+      }
+    };
+
+    const mouseEnterHandler = () => {
+      if (!isMobile) {
+        targetRadius.current = HOVER_RADIUS;
+        startAnimation();
+      }
+    };
+
+    const mouseLeaveHandler = () => {
+      if (!isMobile) {
+        targetRadius.current = BASE_RADIUS;
+        startAnimation();
+      }
+    };
+
     // Smoothly move the spotlight with a delay
     const smoothMouseMove = () => {
       currentMouseRef.current.x +=
@@ -156,35 +175,10 @@ export function HeroBackground() {
     }
     // Desktop mouse-based animation
     else {
-      // Define the event handlers and store in ref
-      handlersRef.current.handleMouseMove = (e: MouseEvent) => {
-        const rect = container.getBoundingClientRect();
-        // Calculate position relative to the container
-        mousePositionRef.current = {
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top + window.scrollY,
-        };
-      };
-
-      handlersRef.current.handleMouseEnter = () => {
-        targetRadius.current = HOVER_RADIUS;
-        startAnimation();
-      };
-
-      handlersRef.current.handleMouseLeave = () => {
-        targetRadius.current = BASE_RADIUS;
-        startAnimation();
-      };
-
-      window.addEventListener("mousemove", handlersRef.current.handleMouseMove);
-      container.addEventListener(
-        "mouseenter",
-        handlersRef.current.handleMouseEnter
-      );
-      container.addEventListener(
-        "mouseleave",
-        handlersRef.current.handleMouseLeave
-      );
+      // Add event listeners for desktop interaction
+      window.addEventListener("mousemove", mouseMoveHandler);
+      container.addEventListener("mouseenter", mouseEnterHandler);
+      container.addEventListener("mouseleave", mouseLeaveHandler);
     }
 
     return () => {
@@ -195,22 +189,11 @@ export function HeroBackground() {
         clearInterval(mobileIntervalRef.current);
       }
 
-      // Only remove mouse event listeners if not mobile
-      if (!isMobile) {
-        window.removeEventListener(
-          "mousemove",
-          handlersRef.current.handleMouseMove
-        );
-        if (container) {
-          container.removeEventListener(
-            "mouseenter",
-            handlersRef.current.handleMouseEnter
-          );
-          container.removeEventListener(
-            "mouseleave",
-            handlersRef.current.handleMouseLeave
-          );
-        }
+      // Clean up event listeners (now we can always reference these variables)
+      window.removeEventListener("mousemove", mouseMoveHandler);
+      if (container) {
+        container.removeEventListener("mouseenter", mouseEnterHandler);
+        container.removeEventListener("mouseleave", mouseLeaveHandler);
       }
     };
   }, [startAnimation, createRandomSpotlight, isMobile]);

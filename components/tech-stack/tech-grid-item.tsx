@@ -2,12 +2,13 @@
 import { GlowingEffect } from "../ui/glowing-effect";
 import { ToolTip } from "../ui/tool-tip";
 import { useState } from "react";
+import { ElementType } from "react";
 
 interface TechGridItemProps {
   area: string;
   title: string;
-  technologies: Array<{ name: string; icon: React.ComponentType<any> }>;
-  icon: React.ReactNode;
+  technologies: Array<{ name: string; icon: ElementType }>;
+  icon: React.ReactNode; // This can stay ReactNode as it's directly rendered, not used as a component
   leftAligned?: boolean;
 }
 
@@ -56,7 +57,7 @@ export function TechGridItem({
 }
 
 type TechIconProps = {
-  tech: { name: string; icon: React.ComponentType<any> };
+  tech: { name: string; icon: ElementType };
   size?: "sm" | "md" | "lg";
 };
 

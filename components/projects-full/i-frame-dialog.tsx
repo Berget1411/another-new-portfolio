@@ -9,7 +9,7 @@ interface IFrameDialogProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  url: string;
+  url?: string;
 }
 
 export function IFrameDialog({
@@ -32,22 +32,35 @@ export function IFrameDialog({
           </Button>
         </DialogHeader>
 
-        <div className='relative w-full h-[80vh]'>
-          {isLoading && (
-            <div className='absolute inset-0 flex items-center justify-center bg-background-secondary'>
-              <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary'></div>
-            </div>
-          )}
+        {url ? (
+          <div className='relative w-full h-[80vh]'>
+            {isLoading && (
+              <div className='absolute inset-0 flex items-center justify-center bg-background-secondary'>
+                <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary'></div>
+              </div>
+            )}
 
-          <iframe
-            src={url}
-            className='w-full h-full border-0'
-            onLoad={() => setIsLoading(false)}
-            title={`${title} preview`}
-            sandbox='allow-same-origin allow-scripts allow-forms'
-            referrerPolicy='no-referrer'
-          />
-        </div>
+            <iframe
+              src={url}
+              className='w-full h-full border-0'
+              onLoad={() => setIsLoading(false)}
+              title={`${title} preview`}
+              sandbox='allow-same-origin allow-scripts allow-forms'
+              referrerPolicy='no-referrer'
+            />
+          </div>
+        ) : (
+          <div className='flex flex-col items-center justify-center p-10 h-[80vh] text-center'>
+            <div className='text-5xl mb-4'>🚧</div>
+            <h3 className='text-2xl font-semibold mb-2'>
+              No Preview Available
+            </h3>
+            <p className='text-text-secondary max-w-md'>
+              This project doesn&apos;t have a live preview URL configured.
+              Please check the GitHub repository for more details.
+            </p>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

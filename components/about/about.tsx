@@ -188,7 +188,7 @@ export function About() {
                               animate='visible'
                               className='list-none'
                             >
-                              <div className='relative rounded-xl border border-background-tertiary p-1 md:p-1.5 md:rounded-2xl md:p-2'>
+                              <div className='relative rounded-xl border border-background-tertiary p-1 md:p-1.5 md:rounded-2xl '>
                                 <GlowingEffect
                                   spread={40}
                                   glow={true}
@@ -268,7 +268,7 @@ interface EntryItem {
   undertitle: string;
   date: string;
   desc1: string;
-  desc2: string;
+  desc2?: string;
   image: string;
 }
 

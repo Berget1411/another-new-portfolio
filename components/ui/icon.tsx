@@ -29,10 +29,13 @@ export function Icon({
 
   // Clone icon with proper typing
   const sizedIcon = React.isValidElement(icon)
-    ? React.cloneElement(icon as React.ReactElement<any>, {
-        width: size === "sm" ? 16 : size === "md" ? 20 : 32,
-        height: size === "sm" ? 16 : size === "md" ? 20 : 32,
-      })
+    ? React.cloneElement(
+        icon as React.ReactElement<React.SVGProps<SVGSVGElement>>,
+        {
+          width: size === "sm" ? 16 : size === "md" ? 20 : 32,
+          height: size === "sm" ? 16 : size === "md" ? 20 : 32,
+        }
+      )
     : icon;
 
   return (

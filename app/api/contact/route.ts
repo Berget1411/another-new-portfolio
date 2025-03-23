@@ -31,9 +31,9 @@ export async function POST(request: NextRequest) {
     const timeElapsed = currentTime - lastSubmissionTime;
 
     if (timeElapsed < RATE_LIMIT_MINUTES * 60 * 1000) {
-      return {
+      return NextResponse.json({
         error: `Please wait ${RATE_LIMIT_MINUTES} minutes before resubmitting the form.`,
-      };
+      });
     }
   }
 
