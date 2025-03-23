@@ -7,8 +7,23 @@ import { HeroMedia } from "./hero-media";
 import { ReadMore } from "./read-more";
 import { HeroNavigation } from "./hero-navigation";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 export function Hero() {
+  const [alignment, setAlignment] = useState("left");
+
+  // Use useEffect for client-side window access
+  useEffect(() => {
+    setAlignment(window.innerWidth < 768 ? "center" : "left");
+
+    const handleResize = () => {
+      setAlignment(window.innerWidth < 768 ? "center" : "left");
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -66,43 +81,43 @@ export function Hero() {
       <HeroBackground />
       <div className='absolute inset-0 flex h-full w-full'>
         <motion.div
-          className='flex md:justify-between w-full md:ml-24 max-md:flex-col max-md:p-24 max-md:text-center'
+          className='flex md:justify-between w-full md:ml-24 max-md:flex-col max-md:p-6 max-md:pt-16 max-md:text-center'
           initial='hidden'
           animate='visible'
           variants={containerVariants}
         >
           <motion.div
-            className='flex flex-col justify-center'
+            className='flex flex-col justify-center max-md:items-center'
             variants={containerVariants}
           >
             <motion.h1
               className='relative z-10 text-3xl md:text-5xl font-bold mb-2'
               variants={itemVariants}
             >
-              <TypeWriter text="Hi, I'm Ludvig." speed={75} align='left' />
+              <TypeWriter text="Hi, I'm Ludvig." speed={75} align={alignment} />
             </motion.h1>
 
             <motion.p
-              className='text-text-secondary text-md md:text-xl mt-2 mb-4 w-md max-md:w-full'
+              className='text-text-secondary text-md md:text-xl mt-2 mb-4 max-w-md mx-auto md:mx-0'
               variants={itemVariants}
             >
               Full Stack Developer, AI, Finance & Management
             </motion.p>
 
             <motion.ul
-              className='space-y-3 max-md:mt-4 max-md:w-full max-md:text-sm'
+              className='space-y-3 max-md:mt-4 max-md:mb-6 w-full flex flex-col items-center md:items-start'
               variants={containerVariants}
             >
               <motion.li
-                className='max-md:flex max-md:flex-col max-md:items-center'
+                className='flex flex-col md:flex-row md:items-center items-center'
                 variants={itemVariants}
               >
-                <span className='max-md:mb-1'>
+                <span className='mb-1 md:mb-0'>
                   M.Sc. Industrial Engineering and Management
                 </span>
                 <Link
                   href='https://kth.se'
-                  className='text-primary hover:text-primary/80 transition-colors inline-flex items-center max-md:text-base max-md:font-semibold'
+                  className='text-primary hover:text-primary/80 transition-colors inline-flex items-center text-base font-semibold'
                 >
                   <span className='border-b-2 border-primary/30 pb-0.5 md:ml-2'>
                     @KTH
@@ -111,13 +126,13 @@ export function Hero() {
               </motion.li>
 
               <motion.li
-                className='max-md:flex max-md:flex-col max-md:items-center max-md:mt-3'
+                className='flex flex-col md:flex-row md:items-center items-center mt-3 md:mt-0'
                 variants={itemVariants}
               >
-                <span className='max-md:mb-1'>Software Developer</span>
+                <span className='mb-1 md:mb-0'>Software Developer</span>
                 <Link
                   href='https://kthais.com'
-                  className='text-primary hover:text-primary/80 transition-colors inline-flex items-center max-md:text-base max-md:font-semibold'
+                  className='text-primary hover:text-primary/80 transition-colors inline-flex items-center text-base font-semibold'
                 >
                   <span className='border-b-2 border-primary/30 pb-0.5 md:ml-2'>
                     @KTHAIS
@@ -126,13 +141,16 @@ export function Hero() {
               </motion.li>
             </motion.ul>
 
-            <motion.div variants={itemVariants}>
+            <motion.div
+              variants={itemVariants}
+              className='w-full flex justify-center md:justify-start'
+            >
               <HeroMedia />
             </motion.div>
           </motion.div>
 
           <motion.div
-            className='flex flex-col justify-center z-30'
+            className='flex flex-col justify-center z-30 max-md:mt-8'
             variants={rightSideVariants}
             initial='hidden'
             animate='visible'
@@ -143,7 +161,7 @@ export function Hero() {
       </div>
 
       <motion.div
-        className='max-md:pb-16'
+        className='absolute bottom-4 left-0 right-0 flex justify-center max-sm:-bottom-4'
         variants={readMoreVariants}
         initial='hidden'
         animate='visible'

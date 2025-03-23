@@ -1,14 +1,14 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 // Configuration for the grid and spotlight effect
-const TILE_SIZE = 100;
 const BASE_RADIUS = 150;
 const HOVER_RADIUS = 300;
 const TRANSITION_DURATION = 200; // ms
 const LERP_SPEED = 0.05; // Controls the "lag" of the spotlight (lower = more lag)
+const MOBILE_ANIMATION_INTERVAL = 3000; // Time between random spotlight positions on mobile
 
 export function HeroBackground() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -19,6 +19,15 @@ export function HeroBackground() {
   const mousePositionRef = useRef({ x: 0, y: 0 });
   const currentMouseRef = useRef({ x: 0, y: 0 });
   const currentRadiusRef = useRef(BASE_RADIUS);
+  const [isMobile, setIsMobile] = useState(false);
+  const mobileIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Store event handlers in refs to avoid cleanup scope issues
+  const handlersRef = useRef({
+    handleMouseMove: (e: MouseEvent) => {},
+    handleMouseEnter: () => {},
+    handleMouseLeave: () => {},
+  });
 
   // Function to update the spotlight mask
   const updateMask = (radius: number, x: number, y: number) => {
@@ -56,8 +65,47 @@ export function HeroBackground() {
     requestAnimationFrame(step);
   }, []);
 
+  // Function to create random spotlight position for mobile
+  const createRandomSpotlight = useCallback(() => {
+    if (!containerRef.current) return;
+
+    const container = containerRef.current;
+    const rect = container.getBoundingClientRect();
+    const randomX = Math.random() * rect.width;
+    const randomY = Math.random() * rect.height;
+
+    mousePositionRef.current = { x: randomX, y: randomY };
+
+    // Alternate between large and small radius
+    targetRadius.current =
+      targetRadius.current === BASE_RADIUS ? HOVER_RADIUS : BASE_RADIUS;
+
+    startAnimation();
+  }, [startAnimation]);
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobileWidth = 768;
+      setIsMobile(window.innerWidth < mobileWidth);
+    };
+
+    // Only run on client side
+    if (typeof window !== "undefined") {
+      checkMobile();
+      window.addEventListener("resize", checkMobile);
+
+      return () => {
+        window.removeEventListener("resize", checkMobile);
+      };
+    }
+  }, []);
+
   // Setup mouse tracking and spotlight effect
   useEffect(() => {
+    // Skip server-side rendering
+    if (typeof window === "undefined") return;
+
     // Skip effects for users with reduced motion preference
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
@@ -71,15 +119,6 @@ export function HeroBackground() {
     const { width, height } = container.getBoundingClientRect();
     updateMask(BASE_RADIUS, width / 2, height / 2);
     currentMouseRef.current = { x: width / 2, y: height / 2 };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = container.getBoundingClientRect();
-      // Calculate position relative to the container
-      mousePositionRef.current = {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top + window.scrollY,
-      };
-    };
 
     // Smoothly move the spotlight with a delay
     const smoothMouseMove = () => {
@@ -96,32 +135,85 @@ export function HeroBackground() {
       animationFrame.current = requestAnimationFrame(smoothMouseMove);
     };
 
-    const handleMouseEnter = () => {
-      targetRadius.current = HOVER_RADIUS;
-      startAnimation();
-    };
-
-    const handleMouseLeave = () => {
-      targetRadius.current = BASE_RADIUS;
-      startAnimation();
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    container.addEventListener("mouseenter", handleMouseEnter);
-    container.addEventListener("mouseleave", handleMouseLeave);
-
     // Start animation loop
     animationFrame.current = requestAnimationFrame(smoothMouseMove);
 
+    // Mobile-specific random animation
+    if (isMobile) {
+      // Clear any previous interval
+      if (mobileIntervalRef.current) {
+        clearInterval(mobileIntervalRef.current);
+      }
+
+      // Set initial random position
+      createRandomSpotlight();
+
+      // Set interval for continuous random positions
+      mobileIntervalRef.current = setInterval(
+        createRandomSpotlight,
+        MOBILE_ANIMATION_INTERVAL
+      );
+    }
+    // Desktop mouse-based animation
+    else {
+      // Define the event handlers and store in ref
+      handlersRef.current.handleMouseMove = (e: MouseEvent) => {
+        const rect = container.getBoundingClientRect();
+        // Calculate position relative to the container
+        mousePositionRef.current = {
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top + window.scrollY,
+        };
+      };
+
+      handlersRef.current.handleMouseEnter = () => {
+        targetRadius.current = HOVER_RADIUS;
+        startAnimation();
+      };
+
+      handlersRef.current.handleMouseLeave = () => {
+        targetRadius.current = BASE_RADIUS;
+        startAnimation();
+      };
+
+      window.addEventListener("mousemove", handlersRef.current.handleMouseMove);
+      container.addEventListener(
+        "mouseenter",
+        handlersRef.current.handleMouseEnter
+      );
+      container.addEventListener(
+        "mouseleave",
+        handlersRef.current.handleMouseLeave
+      );
+    }
+
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      container.removeEventListener("mouseenter", handleMouseEnter);
-      container.removeEventListener("mouseleave", handleMouseLeave);
       if (animationFrame.current) {
         cancelAnimationFrame(animationFrame.current);
       }
+      if (mobileIntervalRef.current) {
+        clearInterval(mobileIntervalRef.current);
+      }
+
+      // Only remove mouse event listeners if not mobile
+      if (!isMobile) {
+        window.removeEventListener(
+          "mousemove",
+          handlersRef.current.handleMouseMove
+        );
+        if (container) {
+          container.removeEventListener(
+            "mouseenter",
+            handlersRef.current.handleMouseEnter
+          );
+          container.removeEventListener(
+            "mouseleave",
+            handlersRef.current.handleMouseLeave
+          );
+        }
+      }
     };
-  }, [startAnimation]);
+  }, [startAnimation, createRandomSpotlight, isMobile]);
 
   return (
     <div className='absolute inset-0 overflow-hidden' ref={containerRef}>
