@@ -75,7 +75,7 @@ export function Hero() {
 
   return (
     <section
-      className='relative w-full h-[100dvh] overflow-hidden max-sm:h-[60dvh]'
+      className='relative w-full h-[100dvh] overflow-hidden'
       id='hero-section'
     >
       <HeroBackground />
