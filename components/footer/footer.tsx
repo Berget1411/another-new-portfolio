@@ -1,17 +1,22 @@
 import { Icon } from "../ui/icon";
-import { Github, Linkedin } from "lucide-react";
+import { Github, Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
 
 const socialLinks = [
   {
-    href: "https://github.com/ludvigbergstrom",
+    href: "https://github.com/Berget1411",
     icon: <Github />,
     tooltip: "Github",
   },
   {
-    href: "https://www.linkedin.com/in/ludvigbergstrom/",
+    href: "https://www.linkedin.com/in/ludvig-bergstrom/",
     icon: <Linkedin />,
     tooltip: "Linkedin",
+  },
+  {
+    href: "mailto:ludvig.benjaminbergstrom@gmail.com",
+    icon: <Mail />,
+    tooltip: "Email",
   },
 ];
 export function Footer() {

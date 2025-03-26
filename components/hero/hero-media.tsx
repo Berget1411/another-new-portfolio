@@ -6,17 +6,17 @@ const media = [
   {
     icon: <Github />,
     tooltip: "GitHub",
-    href: "https://github.com",
+    href: "https://github.com/Berget1411",
   },
   {
     icon: <Linkedin />,
     tooltip: "LinkedIn",
-    href: "https://linkedin.com",
+    href: "https://www.linkedin.com/in/ludvig-bergstrom/",
   },
   {
     icon: <Mail />,
     tooltip: "Email",
-    href: "mailto:email@example.com",
+    href: "mailto:ludvig.benjaminbergstrom@gmail.com",
   },
 ];
 export function HeroMedia() {
