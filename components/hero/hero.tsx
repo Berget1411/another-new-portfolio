@@ -161,7 +161,7 @@ export function Hero() {
       </div>
 
       <motion.div
-        className='absolute bottom-4 left-0 right-0 flex justify-center max-sm:bottom-2 max-sm:hidden'
+        className='absolute bottom-4 left-0 right-0 flex justify-center max-sm:bottom-2'
         variants={readMoreVariants}
         initial='hidden'
         animate='visible'
