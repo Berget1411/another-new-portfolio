@@ -21,7 +21,7 @@ const media = [
 ];
 export function HeroMedia() {
   return (
-    <div className='flex gap-8 mt-6 max-md:justify-center'>
+    <div className='flex gap-5 md:gap-8 mt-3 md:mt-6 max-md:justify-center'>
       {media.map((item) => (
         <Link
           key={item.tooltip}

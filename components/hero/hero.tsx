@@ -75,37 +75,37 @@ export function Hero() {
 
   return (
     <section
-      className='relative w-full h-[100dvh] overflow-hidden'
+      className='relative w-full h-[100dvh] overflow-hidden max-sm:h-[60dvh]'
       id='hero-section'
     >
       <HeroBackground />
       <div className='absolute inset-0 flex h-full w-full'>
         <motion.div
-          className='flex md:justify-between w-full md:ml-24 max-md:flex-col max-md:p-6 max-md:pt-16 max-md:text-center'
+          className='flex md:justify-between w-full md:ml-24 max-md:flex-col max-md:p-6 max-md:pt-10 max-md:text-center'
           initial='hidden'
           animate='visible'
           variants={containerVariants}
         >
           <motion.div
-            className='flex flex-col justify-center max-md:items-center'
+            className='flex flex-col justify-center max-md:items-center max-md:justify-start'
             variants={containerVariants}
           >
             <motion.h1
-              className='relative z-10 text-3xl md:text-5xl font-bold mb-2'
+              className='relative z-10 text-2xl md:text-5xl font-bold mb-2'
               variants={itemVariants}
             >
               <TypeWriter text="Hi, I'm Ludvig." speed={75} align={alignment} />
             </motion.h1>
 
             <motion.p
-              className='text-text-secondary text-md md:text-xl mt-2 mb-4 max-w-md mx-auto md:mx-0'
+              className='text-text-secondary text-sm md:text-xl mt-2 mb-2 max-w-md mx-auto md:mx-0'
               variants={itemVariants}
             >
               Full Stack Developer, AI, Finance & Management
             </motion.p>
 
             <motion.ul
-              className='space-y-3 max-md:mt-4 max-md:mb-6 w-full flex flex-col items-center md:items-start'
+              className='space-y-1.5 md:space-y-3 max-md:mt-2 max-md:mb-3 w-full flex flex-col items-center md:items-start'
               variants={containerVariants}
             >
               <motion.li
@@ -150,7 +150,7 @@ export function Hero() {
           </motion.div>
 
           <motion.div
-            className='flex flex-col justify-center z-30 max-md:mt-8'
+            className='flex flex-col justify-center z-30 max-md:mt-4'
             variants={rightSideVariants}
             initial='hidden'
             animate='visible'
@@ -161,7 +161,7 @@ export function Hero() {
       </div>
 
       <motion.div
-        className='absolute bottom-4 left-0 right-0 flex justify-center max-sm:-bottom-4'
+        className='absolute bottom-4 left-0 right-0 flex justify-center max-sm:bottom-2 max-sm:hidden'
         variants={readMoreVariants}
         initial='hidden'
         animate='visible'
