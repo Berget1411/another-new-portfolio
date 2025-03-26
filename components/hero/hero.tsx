@@ -147,9 +147,8 @@ export function Hero() {
                 <span className='mb-1 md:mb-0'>Software Developer</span>
                 <div className='flex flex-row items-center gap-2 md:ml-2'>
                   {softwareCompanies.map((company, index) => (
-                    <>
+                    <div key={company.name} className='flex items-center'>
                       <Link
-                        key={company.name}
                         href={company.link}
                         className='text-primary hover:text-primary/80 transition-colors inline-flex items-center text-base font-semibold'
                       >
@@ -158,9 +157,9 @@ export function Hero() {
                         </span>
                       </Link>
                       {index < softwareCompanies.length - 1 && (
-                        <span className='text-primary/80'>•</span>
+                        <span className='text-primary/80 ml-2'>•</span>
                       )}
-                    </>
+                    </div>
                   ))}
                 </div>
               </motion.li>
