@@ -73,26 +73,27 @@ export function Projects() {
         Here are some of my previous projects and ones I&apos;m working on right
         now
       </motion.p>
-      <motion.div
-        className='main-container pt-8 md:pt-12'
-        initial='hidden'
-        whileInView='visible'
-        viewport={{ once: true, margin: "-100px" }}
-        variants={containerVariants}
-      >
-        <motion.div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6'>
+
+      <div className='main-container pt-8 md:pt-12'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6'>
           {formattedProjects.map((project, index) => (
             <motion.div
               key={project.title}
               variants={itemVariants}
+              initial='hidden'
+              whileInView='visible'
+              viewport={{ once: true, margin: "-50px" }}
               custom={index}
               className='h-full'
+              transition={{
+                delay: 0.1 * index,
+              }}
             >
               <ProjectCard project={project} />
             </motion.div>
           ))}
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </div>
   );
 }
