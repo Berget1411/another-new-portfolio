@@ -9,6 +9,21 @@ import { HeroNavigation } from "./hero-navigation";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
+const softwareCompanies = [
+  {
+    name: "KTHAIS",
+    link: "https://kthais.com",
+  },
+  {
+    name: "WKIT",
+    link: "https://weknowit.se",
+  },
+  {
+    name: "THSB",
+    link: "https://thsbusiness.se",
+  },
+];
+
 export function Hero() {
   const [alignment, setAlignment] = useState<"left" | "center">("left");
 
@@ -130,14 +145,24 @@ export function Hero() {
                 variants={itemVariants}
               >
                 <span className='mb-1 md:mb-0'>Software Developer</span>
-                <Link
-                  href='https://kthais.com'
-                  className='text-primary hover:text-primary/80 transition-colors inline-flex items-center text-base font-semibold'
-                >
-                  <span className='border-b-2 border-primary/30 pb-0.5 md:ml-2'>
-                    @KTHAIS
-                  </span>
-                </Link>
+                <div className='flex flex-row items-center gap-2 md:ml-2'>
+                  {softwareCompanies.map((company, index) => (
+                    <>
+                      <Link
+                        key={company.name}
+                        href={company.link}
+                        className='text-primary hover:text-primary/80 transition-colors inline-flex items-center text-base font-semibold'
+                      >
+                        <span className='border-b-2 border-primary/30 '>
+                          @{company.name}
+                        </span>
+                      </Link>
+                      {index < softwareCompanies.length - 1 && (
+                        <span className='text-primary/80'>•</span>
+                      )}
+                    </>
+                  ))}
+                </div>
               </motion.li>
             </motion.ul>
 
