@@ -6,9 +6,10 @@ import { Icon } from "../ui/icon";
 import { Github, ArrowRight, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { motion, useInView } from "framer-motion";
+import { useState, useRef } from "react";
 import { IFrameDialog } from "./i-frame-dialog";
+import { RevealElement } from "../ui/reveal-element";
 
 export function ProjectFullCard({
   project,
@@ -22,6 +23,8 @@ export function ProjectFullCard({
   // Format the index to have leading zero for single digits
   const formattedIndex = String(index + 1).padStart(2, "0");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(cardRef, { once: true, margin: "-100px" });
 
   // Function to conditionally open the dialog only if URL exists
   const handlePreviewClick = () => {
@@ -30,13 +33,34 @@ export function ProjectFullCard({
     }
   };
 
+  // Animation variants for staggered animations
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5 },
+    },
+  };
+
   return (
     <motion.div
       id={project.title}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      viewport={{ once: true }}
+      ref={cardRef}
+      initial='hidden'
+      animate={isInView ? "visible" : "hidden"}
+      variants={containerVariants}
       className={cn(
         "flex justify-between items-center gap-10 py-16 relative",
         // Only apply reverse on screens larger than md
@@ -44,7 +68,7 @@ export function ProjectFullCard({
       )}
     >
       {/* Background Number - Updated positioning and styling */}
-      <div
+      <motion.div
         className={cn(
           "absolute -z-10 text-[120px] font-bold text-transparent select-none -top-10 max-md:-top-8 lg:top-0",
           // Position left for all mobile layouts, respect reverse only on md+
@@ -52,16 +76,37 @@ export function ProjectFullCard({
           reverse && "md:right-0 md:left-auto",
           "number-outline"
         )}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={
+          isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }
+        }
+        transition={{ duration: 0.5, delay: 0.2 }}
       >
         {formattedIndex}
-      </div>
+      </motion.div>
 
-      <div className='flex flex-col gap-5 max-w-lg'>
-        <h2 className='text-4xl font-bold'>{project.title}</h2>
-        <p className='text-sm text-text-secondary leading-relaxed'>
+      <motion.div
+        className='flex flex-col gap-5 max-w-lg'
+        variants={containerVariants}
+      >
+        {/* Project title with reveal animation */}
+        <RevealElement isVisible={isInView} direction='left' color='secondary'>
+          <h2 className='text-4xl font-bold'>{project.title}</h2>
+        </RevealElement>
+
+        {/* Description with fade-in animation */}
+        <motion.p
+          className='text-sm text-text-secondary leading-relaxed'
+          variants={itemVariants}
+        >
           {project.description}
-        </p>
-        <div className='flex gap-4 items-center mt-3'>
+        </motion.p>
+
+        {/* Buttons with fade-in animation */}
+        <motion.div
+          className='flex gap-4 items-center mt-3'
+          variants={itemVariants}
+        >
           {project.link ? (
             <Button className='group'>
               <Link href={project.link}>View Project</Link>
@@ -86,38 +131,53 @@ export function ProjectFullCard({
               />
             </Link>
           )}
-        </div>
-      </div>
-
-      <motion.div
-        className={cn(
-          "w-full max-w-lg overflow-hidden shadow-md relative group",
-          project.link ? "cursor-pointer" : "cursor-default"
-        )}
-        whileHover={project.link ? { scale: 1.02 } : {}}
-        transition={{ duration: 0.3 }}
-        onClick={handlePreviewClick}
-      >
-        {project.link && (
-          <div className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10'>
-            <Button variant='outline' className='bg-background-primary/80'>
-              Preview Website
-            </Button>
-          </div>
-        )}
-        <Image
-          src={project.image || "/images/placeholder_image.png"}
-          alt={project.title}
-          width={500}
-          height={300}
-          className={cn("w-full h-auto object-cover", "clip-corners")}
-          style={{
-            clipPath: !reverse
-              ? "polygon(0% 15px, 15px 0%, 100% 0%, 100% calc(100% - 60px), calc(100% - 60px) 100%, 0% 100%)"
-              : "polygon(0% 15px, 15px 0%, 100% 0%, 100% 100%, 60px 100%, 0% calc(100% - 60px))",
-          }}
-        />
+        </motion.div>
       </motion.div>
+
+      {/* Project image with reveal animation - now using the same direction and color as the title */}
+      <RevealElement
+        isVisible={isInView}
+        direction='left'
+        color='secondary'
+        className='w-full max-w-lg'
+      >
+        <div
+          className={cn(
+            "overflow-hidden shadow-md relative group",
+            project.link ? "cursor-pointer" : "cursor-default"
+          )}
+          onClick={handlePreviewClick}
+        >
+          {project.link && (
+            <motion.div
+              className='absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10'
+              initial={{ opacity: 0 }}
+              whileHover={{ opacity: 1 }}
+            >
+              <Button variant='outline' className='bg-background-primary/80'>
+                Preview Website
+              </Button>
+            </motion.div>
+          )}
+          <motion.div
+            whileHover={project.link ? { scale: 1.02 } : {}}
+            transition={{ duration: 0.3 }}
+          >
+            <Image
+              src={project.image || "/images/placeholder_image.png"}
+              alt={project.title}
+              width={500}
+              height={300}
+              className={cn("w-full h-auto object-cover", "clip-corners")}
+              style={{
+                clipPath: !reverse
+                  ? "polygon(0% 15px, 15px 0%, 100% 0%, 100% calc(100% - 60px), calc(100% - 60px) 100%, 0% 100%)"
+                  : "polygon(0% 15px, 15px 0%, 100% 0%, 100% 100%, 60px 100%, 0% calc(100% - 60px))",
+              }}
+            />
+          </motion.div>
+        </div>
+      </RevealElement>
 
       {/* IFrame Dialog - only render if project.link exists */}
       {project.link && (
