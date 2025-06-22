@@ -1,80 +1,20 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-// Configuration for the grid and spotlight effect
-const BASE_RADIUS = 150;
-const HOVER_RADIUS = 300;
-const TRANSITION_DURATION = 200; // ms
-const LERP_SPEED = 0.05; // Controls the "lag" of the spotlight (lower = more lag)
-const MOBILE_ANIMATION_INTERVAL = 3000; // Time between random spotlight positions on mobile
+// Configuration for the grid and glow effect
+const GRID_SIZE = 100;
+const GLOW_RADIUS = 300;
+const MOBILE_ANIMATION_INTERVAL = 3000;
 
 export function HeroBackground() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-  const spotlightRef = useRef<HTMLDivElement>(null);
-  const targetRadius = useRef(BASE_RADIUS);
-  const animationFrame = useRef<number | null>(null);
-  const mousePositionRef = useRef({ x: 0, y: 0 });
-  const currentMouseRef = useRef({ x: 0, y: 0 });
-  const currentRadiusRef = useRef(BASE_RADIUS);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationRef = useRef<number | undefined>(undefined);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const mobileIntervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Function to update the spotlight mask
-  const updateMask = (radius: number, x: number, y: number) => {
-    if (spotlightRef.current) {
-      const maskValue = `radial-gradient(circle ${radius}px at ${x}px ${y}px, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.4) 30%, rgba(255, 255, 255, 0) 100%)`;
-      spotlightRef.current.style.maskImage = maskValue;
-      spotlightRef.current.style.webkitMaskImage = maskValue;
-    }
-  };
-
-  // Animation to smoothly transition the radius
-  const startAnimation = useCallback(() => {
-    let startTime: number | null = null;
-    const startRadius = currentRadiusRef.current;
-    const endRadius = targetRadius.current;
-
-    const step = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      const progress = Math.min(elapsed / TRANSITION_DURATION, 1);
-      const newRadius = startRadius + (endRadius - startRadius) * progress;
-
-      currentRadiusRef.current = newRadius;
-      updateMask(
-        newRadius,
-        currentMouseRef.current.x,
-        currentMouseRef.current.y
-      );
-
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      }
-    };
-
-    requestAnimationFrame(step);
-  }, []);
-
-  // Function to create random spotlight position for mobile
-  const createRandomSpotlight = useCallback(() => {
-    if (!containerRef.current) return;
-
-    const container = containerRef.current;
-    const rect = container.getBoundingClientRect();
-    const randomX = Math.random() * rect.width;
-    const randomY = Math.random() * rect.height;
-
-    mousePositionRef.current = { x: randomX, y: randomY };
-
-    // Alternate between large and small radius
-    targetRadius.current =
-      targetRadius.current === BASE_RADIUS ? HOVER_RADIUS : BASE_RADIUS;
-
-    startAnimation();
-  }, [startAnimation]);
 
   // Check if device is mobile
   useEffect(() => {
@@ -83,145 +23,238 @@ export function HeroBackground() {
       setIsMobile(window.innerWidth < mobileWidth);
     };
 
-    // Only run on client side
     if (typeof window !== "undefined") {
       checkMobile();
       window.addEventListener("resize", checkMobile);
-
-      return () => {
-        window.removeEventListener("resize", checkMobile);
-      };
+      return () => window.removeEventListener("resize", checkMobile);
     }
   }, []);
 
-  // Setup mouse tracking and spotlight effect
+  // Draw the grid with glow effect
+  const drawGrid = useCallback(
+    (ctx: CanvasRenderingContext2D, width: number, height: number) => {
+      // Clear canvas
+      ctx.clearRect(0, 0, width, height);
+
+      // Base grid color (faded blue)
+      const baseGridColor = "rgba(100, 149, 237, 0.15)"; // Faded cornflower blue
+      const glowGridColor = "rgba(100, 149, 237, 0.8)"; // Brighter blue for glow
+
+      // Draw base grid
+      ctx.strokeStyle = baseGridColor;
+      ctx.lineWidth = 1;
+
+      // Vertical lines
+      for (let x = 0; x <= width; x += GRID_SIZE) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+
+      // Horizontal lines
+      for (let y = 0; y <= height; y += GRID_SIZE) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+
+      // Draw glow effect if hovering or on mobile
+      if (isHovering || isMobile) {
+        const gradient = ctx.createRadialGradient(
+          mousePos.x,
+          mousePos.y,
+          0,
+          mousePos.x,
+          mousePos.y,
+          GLOW_RADIUS
+        );
+
+        gradient.addColorStop(0, glowGridColor);
+        gradient.addColorStop(0.3, "rgba(100, 149, 237, 0.4)");
+        gradient.addColorStop(1, "rgba(100, 149, 237, 0)");
+
+        // Create a clipping mask for the glow effect
+        ctx.save();
+        ctx.globalCompositeOperation = "source-over";
+
+        // Draw glowing grid lines within the radius
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2;
+
+        // Find grid lines near the mouse position
+        const startX = Math.max(
+          0,
+          Math.floor((mousePos.x - GLOW_RADIUS) / GRID_SIZE) * GRID_SIZE
+        );
+        const endX = Math.min(
+          width,
+          Math.ceil((mousePos.x + GLOW_RADIUS) / GRID_SIZE) * GRID_SIZE
+        );
+        const startY = Math.max(
+          0,
+          Math.floor((mousePos.y - GLOW_RADIUS) / GRID_SIZE) * GRID_SIZE
+        );
+        const endY = Math.min(
+          height,
+          Math.ceil((mousePos.y + GLOW_RADIUS) / GRID_SIZE) * GRID_SIZE
+        );
+
+        // Draw vertical glow lines
+        for (let x = startX; x <= endX; x += GRID_SIZE) {
+          const distance = Math.abs(x - mousePos.x);
+          if (distance <= GLOW_RADIUS) {
+            const intensity = 1 - distance / GLOW_RADIUS;
+            ctx.globalAlpha = intensity;
+            ctx.beginPath();
+            ctx.moveTo(x, Math.max(0, mousePos.y - GLOW_RADIUS));
+            ctx.lineTo(x, Math.min(height, mousePos.y + GLOW_RADIUS));
+            ctx.stroke();
+          }
+        }
+
+        // Draw horizontal glow lines
+        for (let y = startY; y <= endY; y += GRID_SIZE) {
+          const distance = Math.abs(y - mousePos.y);
+          if (distance <= GLOW_RADIUS) {
+            const intensity = 1 - distance / GLOW_RADIUS;
+            ctx.globalAlpha = intensity;
+            ctx.beginPath();
+            ctx.moveTo(Math.max(0, mousePos.x - GLOW_RADIUS), y);
+            ctx.lineTo(Math.min(width, mousePos.x + GLOW_RADIUS), y);
+            ctx.stroke();
+          }
+        }
+
+        ctx.restore();
+      }
+    },
+    [mousePos, isHovering, isMobile]
+  );
+
+  // Animation loop
+  const animate = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    drawGrid(ctx, canvas.width, canvas.height);
+    animationRef.current = requestAnimationFrame(animate);
+  }, [drawGrid]);
+
+  // Handle canvas setup and resize
   useEffect(() => {
-    // Skip server-side rendering
-    if (typeof window === "undefined") return;
-
-    // Skip effects for users with reduced motion preference
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReducedMotion) return;
-
-    if (!containerRef.current) return;
+    const canvas = canvasRef.current;
     const container = containerRef.current;
+    if (!canvas || !container) return;
 
-    // Initialize position to center
-    const { width, height } = container.getBoundingClientRect();
-    updateMask(BASE_RADIUS, width / 2, height / 2);
-    currentMouseRef.current = { x: width / 2, y: height / 2 };
-
-    // Define event handlers at this scope level so they're available for cleanup
-    const mouseMoveHandler = (e: MouseEvent) => {
-      if (!isMobile) {
-        const rect = container.getBoundingClientRect();
-        // Calculate position relative to the container
-        mousePositionRef.current = {
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top + window.scrollY,
-        };
-      }
+    const resizeCanvas = () => {
+      const rect = container.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
     };
 
-    const mouseEnterHandler = () => {
-      if (!isMobile) {
-        targetRadius.current = HOVER_RADIUS;
-        startAnimation();
-      }
-    };
-
-    const mouseLeaveHandler = () => {
-      if (!isMobile) {
-        targetRadius.current = BASE_RADIUS;
-        startAnimation();
-      }
-    };
-
-    // Smoothly move the spotlight with a delay
-    const smoothMouseMove = () => {
-      currentMouseRef.current.x +=
-        (mousePositionRef.current.x - currentMouseRef.current.x) * LERP_SPEED;
-      currentMouseRef.current.y +=
-        (mousePositionRef.current.y - currentMouseRef.current.y) * LERP_SPEED;
-
-      updateMask(
-        currentRadiusRef.current,
-        currentMouseRef.current.x,
-        currentMouseRef.current.y
-      );
-      animationFrame.current = requestAnimationFrame(smoothMouseMove);
-    };
-
-    // Start animation loop
-    animationFrame.current = requestAnimationFrame(smoothMouseMove);
-
-    // Mobile-specific random animation
-    if (isMobile) {
-      // Clear any previous interval
-      if (mobileIntervalRef.current) {
-        clearInterval(mobileIntervalRef.current);
-      }
-
-      // Set initial random position
-      createRandomSpotlight();
-
-      // Set interval for continuous random positions
-      mobileIntervalRef.current = setInterval(
-        createRandomSpotlight,
-        MOBILE_ANIMATION_INTERVAL
-      );
-    }
-    // Desktop mouse-based animation
-    else {
-      // Add event listeners for desktop interaction
-      window.addEventListener("mousemove", mouseMoveHandler);
-      container.addEventListener("mouseenter", mouseEnterHandler);
-      container.addEventListener("mouseleave", mouseLeaveHandler);
-    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
 
     return () => {
-      if (animationFrame.current) {
-        cancelAnimationFrame(animationFrame.current);
+      window.removeEventListener("resize", resizeCanvas);
+    };
+  }, []);
+
+  // Start animation
+  useEffect(() => {
+    animate();
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
       }
+    };
+  }, [animate]);
+
+  // Mobile random position animation
+  useEffect(() => {
+    if (!isMobile) {
+      if (mobileIntervalRef.current) {
+        clearInterval(mobileIntervalRef.current);
+        mobileIntervalRef.current = null;
+      }
+      return;
+    }
+
+    const createRandomPosition = () => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      setMousePos({
+        x: Math.random() * rect.width,
+        y: Math.random() * rect.height,
+      });
+      setIsHovering(true);
+    };
+
+    // Set initial position
+    createRandomPosition();
+
+    // Set interval for random positions
+    mobileIntervalRef.current = setInterval(
+      createRandomPosition,
+      MOBILE_ANIMATION_INTERVAL
+    );
+
+    return () => {
       if (mobileIntervalRef.current) {
         clearInterval(mobileIntervalRef.current);
       }
-
-      // Clean up event listeners (now we can always reference these variables)
-      window.removeEventListener("mousemove", mouseMoveHandler);
-      if (container) {
-        container.removeEventListener("mouseenter", mouseEnterHandler);
-        container.removeEventListener("mouseleave", mouseLeaveHandler);
-      }
     };
-  }, [startAnimation, createRandomSpotlight, isMobile]);
+  }, [isMobile]);
+
+  // Mouse event handlers
+  useEffect(() => {
+    if (typeof window === "undefined" || isMobile) return;
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      setMousePos({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      });
+    };
+
+    const handleMouseEnter = () => {
+      setIsHovering(true);
+    };
+
+    const handleMouseLeave = () => {
+      setIsHovering(false);
+    };
+
+    container.addEventListener("mousemove", handleMouseMove);
+    container.addEventListener("mouseenter", handleMouseEnter);
+    container.addEventListener("mouseleave", handleMouseLeave);
+
+    return () => {
+      container.removeEventListener("mousemove", handleMouseMove);
+      container.removeEventListener("mouseenter", handleMouseEnter);
+      container.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, [isMobile]);
 
   return (
     <div className='absolute inset-0 overflow-hidden' ref={containerRef}>
-      {/* Base grid */}
-      <div
-        ref={gridRef}
-        className={cn(
-          "absolute inset-0",
-          "[background-size:100px_100px]",
-          "[background-image:linear-gradient(to_right,var(--color-background-tertiary)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-background-tertiary)_1px,transparent_1px)]"
-        )}
+      <canvas
+        ref={canvasRef}
+        className='absolute inset-0 w-full h-full'
+        style={{ background: "transparent" }}
       />
 
-      {/* Spotlight grid that will be masked */}
-      <div
-        ref={spotlightRef}
-        className={cn(
-          "absolute inset-0",
-          "[background-size:100px_100px]",
-          "[background-image:linear-gradient(to_right,var(--color-primary)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-primary)_1px,transparent_1px)]"
-        )}
-      />
-
-      {/* Radial gradient overlay */}
-      <div className='pointer-events-none absolute inset-0 bg-[var(--color-background-primary)] [mask-image:radial-gradient(ellipse_at_center,transparent_10%,black)] md:[mask-image:radial-gradient(ellipse_at_center,transparent_1%,black)]'></div>
+      {/* Radial gradient overlay for fade effect */}
+      <div className='pointer-events-none absolute inset-0 bg-[var(--color-background-primary)] [mask-image:radial-gradient(ellipse_at_center,transparent_10%,black)] md:[mask-image:radial-gradient(ellipse_at_center,transparent_1%,black)]' />
     </div>
   );
 }

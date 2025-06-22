@@ -94,7 +94,7 @@ export function Hero() {
       id='hero-section'
     >
       <HeroBackground />
-      <div className='absolute inset-0 flex h-full w-full'>
+      <div className='absolute inset-0 flex h-full w-full pointer-events-none'>
         <motion.div
           className='flex md:justify-between w-full md:ml-24 max-md:flex-col max-md:p-6 max-md:pt-10 max-md:text-center'
           initial='hidden'
@@ -132,7 +132,7 @@ export function Hero() {
                 </span>
                 <Link
                   href='https://kth.se'
-                  className='text-primary hover:text-primary/80 transition-colors inline-flex items-center text-base font-semibold'
+                  className='text-primary hover:text-primary/80 transition-colors inline-flex items-center text-base font-semibold pointer-events-auto'
                 >
                   <span className='border-b-2 border-primary/30 pb-0.5 md:ml-2'>
                     @KTH
@@ -150,7 +150,7 @@ export function Hero() {
                     <div key={company.name} className='flex items-center'>
                       <Link
                         href={company.link}
-                        className='text-primary hover:text-primary/80 transition-colors inline-flex items-center text-base font-semibold'
+                        className='text-primary hover:text-primary/80 transition-colors inline-flex items-center text-base font-semibold pointer-events-auto'
                       >
                         <span className='border-b-2 border-primary/30 '>
                           @{company.name}
@@ -167,14 +167,14 @@ export function Hero() {
 
             <motion.div
               variants={itemVariants}
-              className='w-full flex justify-center md:justify-start'
+              className='w-full flex justify-center md:justify-start pointer-events-auto'
             >
               <HeroMedia />
             </motion.div>
           </motion.div>
 
           <motion.div
-            className='flex flex-col justify-center z-30 max-md:mt-4'
+            className='flex flex-col justify-center z-30 max-md:mt-4 pointer-events-auto'
             variants={rightSideVariants}
             initial='hidden'
             animate='visible'
@@ -185,7 +185,7 @@ export function Hero() {
       </div>
 
       <motion.div
-        className='absolute bottom-4 left-0 right-0 flex justify-center max-sm:bottom-0'
+        className='absolute bottom-4 left-0 right-0 flex justify-center max-sm:bottom-0 pointer-events-auto'
         variants={readMoreVariants}
         initial='hidden'
         animate='visible'
