@@ -20,6 +20,7 @@ export function RevealElement({
 }) {
   const prefersReducedMotion = useReducedMotion();
   const [childrenAreVisible, setChildrenAreVisible] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // Color mapping
   const bgColorClass = {
@@ -30,6 +31,12 @@ export function RevealElement({
   }[color];
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     if (prefersReducedMotion) {
       setChildrenAreVisible(true);
       return;
@@ -42,51 +49,49 @@ export function RevealElement({
     }, ANIMATION_DURATION / 3);
 
     return () => clearTimeout(timer);
-  }, [isVisible, prefersReducedMotion]);
+  }, [isVisible, prefersReducedMotion, mounted]);
 
-  // If reduced motion is preferred, just show the content
-  if (prefersReducedMotion) {
-    return <div className={className}>{children}</div>;
-  }
-
+  // Always render the same structure to prevent hydration mismatch
   return (
     <div className={cn("relative w-fit overflow-hidden", className)}>
       {/* Content with conditional opacity */}
       <div
         className={cn(
           "transition-opacity duration-300",
-          childrenAreVisible ? "opacity-100" : "opacity-0"
+          childrenAreVisible || !mounted ? "opacity-100" : "opacity-0"
         )}
       >
         {children}
       </div>
 
-      {/* Animated overlay - uses framer motion to animate like the CSS after pseudo-element */}
-      <motion.div
-        className={cn("absolute inset-0 w-[200%] h-[200%]", bgColorClass)}
-        initial={{
-          left: direction === "left" ? "-200%" : 0,
-          top: direction === "top" ? "-200%" : 0,
-        }}
-        animate={{
-          left:
-            direction === "left" && isVisible
-              ? "100%"
-              : direction === "left"
-              ? "-200%"
-              : 0,
-          top:
-            direction === "top" && isVisible
-              ? "100%"
-              : direction === "top"
-              ? "-200%"
-              : 0,
-        }}
-        transition={{
-          duration: ANIMATION_DURATION / 1000, // convert ms to seconds for framer
-          ease: "easeInOut",
-        }}
-      />
+      {/* Animated overlay - only render if mounted and not reduced motion */}
+      {mounted && !prefersReducedMotion && (
+        <motion.div
+          className={cn("absolute inset-0 w-[200%] h-[200%]", bgColorClass)}
+          initial={{
+            left: direction === "left" ? "-200%" : 0,
+            top: direction === "top" ? "-200%" : 0,
+          }}
+          animate={{
+            left:
+              direction === "left" && isVisible
+                ? "100%"
+                : direction === "left"
+                ? "-200%"
+                : 0,
+            top:
+              direction === "top" && isVisible
+                ? "100%"
+                : direction === "top"
+                ? "-200%"
+                : 0,
+          }}
+          transition={{
+            duration: ANIMATION_DURATION / 1000, // convert ms to seconds for framer
+            ease: "easeInOut",
+          }}
+        />
+      )}
     </div>
   );
 }
