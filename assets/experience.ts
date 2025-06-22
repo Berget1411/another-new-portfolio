@@ -1,5 +1,14 @@
 export const experience = [
   {
+    id: "kthais_vice_chairman",
+    title: "KTH AI Society",
+    undertitle: "Vice Chairman",
+    date: "May 2025 - Present",
+    desc1:
+      "Managing the society's events and activities, and collaborating with other societies to build the AI community at KTH.",
+    image: "/images/experience/kthais.jpeg",
+  },
+  {
     id: "weknowit",
     title: "We Know IT",
     undertitle: "Full-Stack IT Consultant",
