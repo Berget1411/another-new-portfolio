@@ -9,6 +9,16 @@ import { awards } from "@/assets/awards";
 
 export function About() {
   const [tab, setTab] = useState("about");
+  const [showAllStates, setShowAllStates] = useState<Record<string, boolean>>(
+    {}
+  );
+
+  const toggleShowAll = (tabId: string) => {
+    setShowAllStates((prev) => ({
+      ...prev,
+      [tabId]: !prev[tabId],
+    }));
+  };
 
   // Animation variants
   const containerVariants = {
@@ -135,125 +145,198 @@ export function About() {
             {/* Content for selected tab */}
             {contentData
               .filter((item) => item.id === tab)
-              .map((item) => (
-                <motion.div
-                  key={item.id}
-                  variants={tabContentVariants}
-                  initial='hidden'
-                  animate='visible'
-                  exit='exit'
-                  transition={{ duration: 0.4 }}
-                >
-                  <motion.p className='text-base md:text-lg leading-relaxed text-center md:text-left mb-6 text-white'>
-                    {item.main}
-                  </motion.p>
+              .map((item) => {
+                const showAll = showAllStates[item.id] || false;
+                const maxItems = 3;
 
-                  {/* Render different content based on tab type */}
-                  {item.id === "about" && item.cards && (
-                    <div className='flex flex-col md:flex-row md:items-start gap-6 md:gap-10'>
-                      {/* Profile image section on mobile (top position) */}
-                      <motion.div
-                        className='md:hidden w-full flex justify-center mb-4'
-                        variants={itemVariants}
-                      >
-                        <div className='relative rounded-xl border border-background-tertiary p-1.5 w-36 h-36'>
-                          <GlowingEffect
-                            spread={40}
-                            glow={true}
-                            disabled={false}
-                            proximity={64}
-                            inactiveZone={0.01}
-                          />
-                          <div className='relative flex h-full w-full overflow-hidden rounded-lg bg-background-secondary/30 backdrop-blur-sm'>
-                            <Image
-                              src='/images/profile.png'
-                              alt='Profile'
-                              fill
-                              className='object-cover'
-                              sizes='9rem'
+                // Determine items to display based on tab type
+                let itemsToDisplay: EntryItem[] = [];
+                let hasMoreItems = false;
+
+                if (item.items) {
+                  itemsToDisplay = showAll
+                    ? item.items
+                    : item.items.slice(0, maxItems);
+                  hasMoreItems = item.items.length > maxItems;
+                }
+
+                return (
+                  <motion.div
+                    key={item.id}
+                    variants={tabContentVariants}
+                    initial='hidden'
+                    animate='visible'
+                    exit='exit'
+                    transition={{ duration: 0.4 }}
+                  >
+                    <motion.p className='text-base md:text-lg leading-relaxed text-center md:text-left mb-6 text-white'>
+                      {item.main}
+                    </motion.p>
+
+                    {/* Render different content based on tab type */}
+                    {item.id === "about" && item.cards && (
+                      <div className='flex flex-col md:flex-row md:items-start gap-6 md:gap-10'>
+                        {/* Profile image section on mobile (top position) */}
+                        <motion.div
+                          className='md:hidden w-full flex justify-center mb-4'
+                          variants={itemVariants}
+                        >
+                          <div className='relative rounded-xl border border-background-tertiary p-1.5 w-36 h-36'>
+                            <GlowingEffect
+                              spread={40}
+                              glow={true}
+                              disabled={false}
+                              proximity={64}
+                              inactiveZone={0.01}
                             />
+                            <div className='relative flex h-full w-full overflow-hidden rounded-lg bg-background-secondary/30 backdrop-blur-sm'>
+                              <Image
+                                src='/images/profile.png'
+                                alt='Profile'
+                                fill
+                                className='object-cover'
+                                sizes='9rem'
+                              />
+                            </div>
                           </div>
-                        </div>
-                      </motion.div>
+                        </motion.div>
 
-                      {/* Cards section */}
-                      <div className='w-full md:w-2/3'>
-                        <motion.ul className='grid grid-cols-2 gap-2 md:gap-4'>
-                          {item.cards.map((card, index) => (
-                            <motion.li
-                              key={`about-card-${index}`}
-                              custom={index}
-                              variants={cardVariants}
-                              initial='hidden'
-                              animate='visible'
-                              className='list-none'
-                            >
-                              <div className='relative rounded-xl border border-background-tertiary p-1 md:p-1.5 md:rounded-2xl '>
-                                <GlowingEffect
-                                  spread={40}
-                                  glow={true}
-                                  disabled={false}
-                                  proximity={64}
-                                  inactiveZone={0.01}
-                                />
-                                <div className='relative flex flex-col justify-center items-center overflow-hidden rounded-lg p-2 md:p-4 bg-background-secondary/30 backdrop-blur-sm h-16 md:h-20'>
-                                  <div className='relative z-10 text-center w-full'>
-                                    <span className='text-sm md:text-base text-text-primary font-medium line-clamp-2'>
-                                      {card}
-                                    </span>
+                        {/* Cards section */}
+                        <div className='w-full md:w-2/3'>
+                          <motion.ul className='grid grid-cols-2 gap-2 md:gap-4'>
+                            {item.cards.map((card, index) => (
+                              <motion.li
+                                key={`about-card-${index}`}
+                                custom={index}
+                                variants={cardVariants}
+                                initial='hidden'
+                                animate='visible'
+                                className='list-none'
+                              >
+                                <div className='relative rounded-xl border border-background-tertiary p-1 md:p-1.5 md:rounded-2xl '>
+                                  <GlowingEffect
+                                    spread={40}
+                                    glow={true}
+                                    disabled={false}
+                                    proximity={64}
+                                    inactiveZone={0.01}
+                                  />
+                                  <div className='relative flex flex-col justify-center items-center overflow-hidden rounded-lg p-2 md:p-4 bg-background-secondary/30 backdrop-blur-sm h-16 md:h-20'>
+                                    <div className='relative z-10 text-center w-full'>
+                                      <span className='text-sm md:text-base text-text-primary font-medium line-clamp-2'>
+                                        {card}
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </motion.li>
-                          ))}
-                        </motion.ul>
-                      </div>
-
-                      {/* Profile image section on desktop (right position) */}
-                      <motion.div
-                        className='hidden md:flex w-1/3 justify-end'
-                        variants={itemVariants}
-                      >
-                        <div className='relative rounded-xl border border-background-tertiary p-1.5 md:rounded-2xl md:p-2 w-56 h-56 lg:w-64 lg:h-64'>
-                          <GlowingEffect
-                            spread={40}
-                            glow={true}
-                            disabled={false}
-                            proximity={64}
-                            inactiveZone={0.01}
-                          />
-                          <div className='relative flex h-full w-full overflow-hidden rounded-lg bg-background-secondary/30 backdrop-blur-sm'>
-                            <Image
-                              src='/images/profile.png'
-                              alt='Profile'
-                              fill
-                              className='object-cover'
-                              sizes='(max-width: 1024px) 14rem, 16rem'
-                            />
-                          </div>
+                              </motion.li>
+                            ))}
+                          </motion.ul>
                         </div>
-                      </motion.div>
-                    </div>
-                  )}
 
-                  {/* Grid for experience and education */}
-                  {(item.id === "experience" ||
-                    item.id === "education" ||
-                    item.id === "awards") &&
-                    item.items && (
-                      <motion.ul className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
-                        {item.items.map((entry, index) => (
-                          <ExperienceCard
-                            key={entry.id}
-                            entry={entry}
-                            index={index}
-                            variants={cardVariants}
-                          />
-                        ))}
-                      </motion.ul>
+                        {/* Profile image section on desktop (right position) */}
+                        <motion.div
+                          className='hidden md:flex w-1/3 justify-end'
+                          variants={itemVariants}
+                        >
+                          <div className='relative rounded-xl border border-background-tertiary p-1.5 md:rounded-2xl md:p-2 w-56 h-56 lg:w-64 lg:h-64'>
+                            <GlowingEffect
+                              spread={40}
+                              glow={true}
+                              disabled={false}
+                              proximity={64}
+                              inactiveZone={0.01}
+                            />
+                            <div className='relative flex h-full w-full overflow-hidden rounded-lg bg-background-secondary/30 backdrop-blur-sm'>
+                              <Image
+                                src='/images/profile.png'
+                                alt='Profile'
+                                fill
+                                className='object-cover'
+                                sizes='(max-width: 1024px) 14rem, 16rem'
+                              />
+                            </div>
+                          </div>
+                        </motion.div>
+                      </div>
                     )}
-                </motion.div>
-              ))}
+
+                    {/* Grid for experience, education, and awards */}
+                    {(item.id === "experience" ||
+                      item.id === "education" ||
+                      item.id === "awards") &&
+                      item.items && (
+                        <div className='space-y-4'>
+                          <motion.ul className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
+                            {itemsToDisplay.map((entry, index) => (
+                              <ExperienceCard
+                                key={entry.id}
+                                entry={entry}
+                                index={index}
+                                variants={cardVariants}
+                              />
+                            ))}
+
+                            {/* Show All Button Card */}
+                            {hasMoreItems && !showAll && (
+                              <motion.li
+                                custom={itemsToDisplay.length}
+                                variants={cardVariants}
+                                initial='hidden'
+                                animate='visible'
+                                className='min-h-[12rem] md:min-h-[16rem] list-none'
+                              >
+                                <button
+                                  onClick={() => toggleShowAll(item.id)}
+                                  className='relative h-full w-full rounded-xl border border-background-tertiary p-1.5 md:rounded-2xl md:p-2 hover:border-primary transition-colors group'
+                                >
+                                  <GlowingEffect
+                                    spread={40}
+                                    glow={true}
+                                    disabled={false}
+                                    proximity={64}
+                                    inactiveZone={0.01}
+                                  />
+                                  <div className='relative flex h-full flex-col justify-center items-center overflow-hidden rounded-lg p-3 md:p-4 bg-background-secondary/30 backdrop-blur-sm group-hover:bg-background-secondary/50 transition-colors'>
+                                    <div className='text-center'>
+                                      <div className='text-2xl md:text-3xl mb-2 text-primary'>
+                                        +
+                                      </div>
+                                      <h3 className='text-base md:text-lg font-semibold text-white mb-1'>
+                                        Show All
+                                      </h3>
+                                      <p className='text-xs md:text-sm text-white/80'>
+                                        {item.items.length - maxItems} more{" "}
+                                        {item.label.toLowerCase()}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </button>
+                              </motion.li>
+                            )}
+                          </motion.ul>
+
+                          {/* Show Less Button */}
+                          {showAll && hasMoreItems && (
+                            <motion.div
+                              className='flex justify-center mt-4'
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              <button
+                                onClick={() => toggleShowAll(item.id)}
+                                className='px-4 py-2 rounded-lg border border-background-tertiary bg-background-secondary/30 text-white hover:bg-background-secondary/50 hover:border-primary transition-colors'
+                              >
+                                Show Less
+                              </button>
+                            </motion.div>
+                          )}
+                        </div>
+                      )}
+                  </motion.div>
+                );
+              })}
           </motion.div>
         </motion.div>
       </div>
