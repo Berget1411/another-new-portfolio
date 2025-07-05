@@ -168,7 +168,10 @@ export function ProjectFullCard({
               alt={project.title}
               width={500}
               height={300}
-              className={cn("w-full h-auto object-cover", "clip-corners")}
+              className={cn(
+                "w-full h-auto object-cover border-4 border-background-secondary",
+                "clip-corners"
+              )}
               style={{
                 clipPath: !reverse
                   ? "polygon(0% 15px, 15px 0%, 100% 0%, 100% calc(100% - 60px), calc(100% - 60px) 100%, 0% 100%)"
