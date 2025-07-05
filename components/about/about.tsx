@@ -249,7 +249,7 @@ export function About() {
                             />
                             <div className='relative flex h-full w-full overflow-hidden rounded-lg bg-background-secondary/30 backdrop-blur-sm'>
                               <Image
-                                src='/images/profile.png'
+                                src='/images/portrait.jpeg'
                                 alt='Profile'
                                 fill
                                 className='object-cover'
