@@ -43,8 +43,8 @@ export function ProjectCard({ project }: { project: Project }) {
   }, [showTechPopup]);
 
   return (
-    <div className='relative list-none h-full'>
-      <div className='relative rounded-xl border border-background-tertiary p-1.5 md:rounded-2xl md:p-2 group h-full'>
+    <div className='relative list-none w-full flex'>
+      <div className='relative rounded-xl border border-background-tertiary p-1.5 md:rounded-2xl md:p-2 group flex-1 flex'>
         <GlowingEffect
           spread={40}
           glow={true}
@@ -53,7 +53,7 @@ export function ProjectCard({ project }: { project: Project }) {
           inactiveZone={0.01}
         />
         <div
-          className='relative flex h-full flex-col justify-between overflow-hidden rounded-lg p-3 md:p-4 bg-background-secondary/30 backdrop-blur-sm cursor-pointer'
+          className='relative flex flex-1 flex-col justify-between overflow-hidden rounded-lg p-3 md:p-4 bg-background-secondary/30 backdrop-blur-sm cursor-pointer'
           onClick={() => scrollToSection(project.title)}
         >
           <div className='flex-1'>

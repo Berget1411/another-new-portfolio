@@ -1,5 +1,40 @@
 export const projects = [
   {
+    id: "smartpylogger",
+    title: "SmartPyLogger",
+    image: "/images/projects/smartpylogger.png",
+    github: "https://github.com/Berget1411/Couchbase_Hack_25",
+    demo: "https://smartpylogger.vercel.app/",
+    tech: [
+      "Next.js",
+      "Tailwind CSS",
+      "Polar.sh",
+      "Python",
+      "FastAPI",
+      "Python packages",
+      "Couchbase",
+    ],
+    devMode: false,
+    shortDescription:
+      "SmartPyLogger is a plug-and-play FastAPI logging tool with full request history, AI-powered analysis, CORS/IP blocking, and request flagging. Built in two weeks during the AWS x Couchbase x Cillers 2025 hackathon.",
+    longDescription:
+      "SmartPyLogger is a lightweight FastAPI tool for developers, built in under two weeks at the 2025 AWS x Couchbase x Cillers hackathon by Niklavs Visockis, Jonas Lorenz, and Ludvig Bergström. It logs all requests, analyzes them with AI, blocks or flags suspicious traffic via CORS/IP rules, and comes as a pip-installable package with a real backend, UI, auth, and payments. Designed with a no-fluff, dev-first mindset — no landing page, just working code.",
+    date: "June, 2025",
+  },
+  {
+    id: "Veyla",
+    title: "Veyla",
+    image: "/images/projects/veyla.png",
+    demo: "https://veyla.nu",
+    tech: ["Next.js", "Tailwind CSS", "Framer Motion", "Python", "FastAPI"],
+    devMode: false,
+    shortDescription:
+      "Veyla is a web app that guides families through the estate inventory process after a death, using AI to simplify legal steps. Built in two weeks during a hackathon hosted by SSE Business Lab, KTH AI Society, and Microsoft. I worked on both frontend and backend development.",
+    longDescription:
+      "Veyla is a digital tool that helps families complete estate inventories — the legal process required after a person’s death — in a simple, guided, and secure way. Users answer structured questions, receive personalized legal recommendations from an AI system, and submit everything digitally to the Swedish Tax Agency. The project was developed in two weeks during a hackathon organized by SSE Business Lab, KTH AI Society, and Microsoft. I was responsible for both frontend and backend development, building the full-stack web application with a focus on user experience, AI integration, and secure document handling. Veyla replaces traditional legal complexity with clarity, automation, and accessibility.",
+    date: "June, 2025",
+  },
+  {
     id: "portfolio",
     image: "/images/projects/portfolio_screenshot.png",
     github: "https://github.com/ludvigbergstrom/ludvigbergstrom.com",
