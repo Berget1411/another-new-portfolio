@@ -1,5 +1,5 @@
 "use client";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -18,7 +18,6 @@ export function RevealElement({
   direction?: "left" | "top";
   color?: "primary" | "secondary" | "tertiary" | "quaternary";
 }) {
-  const prefersReducedMotion = useReducedMotion();
   const [childrenAreVisible, setChildrenAreVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -37,11 +36,6 @@ export function RevealElement({
   useEffect(() => {
     if (!mounted) return;
 
-    if (prefersReducedMotion) {
-      setChildrenAreVisible(true);
-      return;
-    }
-
     if (!isVisible) return;
 
     const timer = setTimeout(() => {
@@ -49,7 +43,7 @@ export function RevealElement({
     }, ANIMATION_DURATION / 3);
 
     return () => clearTimeout(timer);
-  }, [isVisible, prefersReducedMotion, mounted]);
+  }, [isVisible, mounted]);
 
   // Always render the same structure to prevent hydration mismatch
   return (
@@ -64,8 +58,8 @@ export function RevealElement({
         {children}
       </div>
 
-      {/* Animated overlay - only render if mounted and not reduced motion */}
-      {mounted && !prefersReducedMotion && (
+      {/* Animated overlay - only render if mounted */}
+      {mounted && (
         <motion.div
           className={cn("absolute inset-0 w-[200%] h-[200%]", bgColorClass)}
           initial={{
